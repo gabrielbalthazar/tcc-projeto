@@ -2,7 +2,7 @@
   <h2>Bem-vindo de volta</h2>
   <p class="subtitle">Entre na sua conta para continuar</p>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" (ngSubmit)="enviaRequest()">
     <app-input-field
       formControlName="email"
       label="E-mail"
@@ -22,11 +22,19 @@
     </app-input-field>
 
     <div class="row-options">
-      <mat-checkbox formControlName="lembrarMe" color="primary">Lembrar-me</mat-checkbox>
+      <mat-checkbox
+      formControlName="lembrarMe"
+      color="primary">
+      Lembrar-me
+    </mat-checkbox>
       <a class="forgot" href="#">Esqueceu a senha?</a>
     </div>
 
-    <button mat-flat-button type="submit" [disabled]="loading" class="submit-btn">
+    <button
+    mat-flat-button type="submit"
+    [disabled]="loading"
+    class="submit-btn"
+    >
       <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
       <span *ngIf="!loading">Entrar →</span>
     </button>

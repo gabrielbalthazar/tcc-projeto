@@ -10,6 +10,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
 import { InputFieldComponent } from './components/input-field/input-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LoadingComponent } from './components/loading/loading.component';
 
 @NgModule({
   declarations: [

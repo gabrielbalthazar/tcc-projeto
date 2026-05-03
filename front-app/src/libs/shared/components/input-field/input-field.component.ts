@@ -1,9 +1,8 @@
 import {
-  Component, Input, OnInit, Optional, Self, forwardRef
+  Component, Input, OnInit, forwardRef
 } from '@angular/core';
 import {
-  ControlValueAccessor, NgControl, AbstractControl,
-  ValidationErrors, NG_VALUE_ACCESSOR
+  ControlValueAccessor, ValidationErrors, NG_VALUE_ACCESSOR
 } from '@angular/forms';
 
 export type InputType = 'text' | 'email' | 'password' | 'textarea' | 'date';
@@ -23,27 +22,27 @@ export type InputType = 'text' | 'email' | 'password' | 'textarea' | 'date';
 })
 export class InputFieldComponent implements ControlValueAccessor, OnInit {
 
-  @Input() label         = '';
-  @Input() placeholder   = '';
+  @Input() label = '';
+  @Input() placeholder = '';
   @Input() type: InputType = 'text';
-  @Input() prefixIcon    = '';
-  @Input() hint          = '';
+  @Input() prefixIcon = '';
+  @Input() hint = '';
   @Input() maxLength?: number;
   @Input() minLength?: number;
   @Input() pattern?: string;
 
   @Input() errorRequired = 'Este campo é obrigatório.';
-  @Input() errorEmail    = 'Informe um e-mail válido.';
-  @Input() errorMin      = '';
-  @Input() errorMax      = '';
-  @Input() errorPattern  = 'Formato inválido.';
+  @Input() errorEmail = 'Informe um e-mail válido.';
+  @Input() errorMin = '';
+  @Input() errorMax = '';
+  @Input() errorPattern = 'Formato inválido.';
 
   showPassword = false;
-  value        = '';
-  disabled     = false;
+  value = '';
+  disabled = false;
 
-  private onChange: (v: string) => void = () => {};
-  private onTouched: () => void         = () => {};
+  private onChange: (v: string) => void = () => { };
+  private onTouched: () => void = () => { };
 
   ngOnInit(): void {
     if (!this.errorMin && this.minLength) {
@@ -62,6 +61,7 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
     return this.value?.length ?? 0;
   }
 
+  //controla o visualizador da senha
   get resolvedType(): string {
     if (this.type === 'password') return this.showPassword ? 'text' : 'password';
     return this.type;
@@ -77,8 +77,20 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
     this.onTouched();
   }
 
-  writeValue(val: string): void       { this.value = val ?? ''; }
-  registerOnChange(fn: any): void     { this.onChange = fn; }
-  registerOnTouched(fn: any): void    { this.onTouched = fn; }
-  setDisabledState(d: boolean): void  { this.disabled = d; }
+  //proximos 4: entendendo o estado do input
+  writeValue(val: string): void { //enquanto escreve
+    this.value = val ?? '';
+  }
+
+  registerOnChange(fn: any): void { //enquanto registra
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void { //quando é clicado
+    this.onTouched = fn;
+  }
+
+  setDisabledState(d: boolean): void { //quando é "desclicado"
+    this.disabled = d;
+  }
 }

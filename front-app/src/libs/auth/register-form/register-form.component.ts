@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { UserRole } from '../../core/models/user.model';
+import { LoadingService } from '../../shared/components/services/loading.service';
 
 @Component({
   selector: 'app-register-form',
@@ -10,14 +11,20 @@ import { UserRole } from '../../core/models/user.model';
   standalone: false,
 })
 export class RegisterFormComponent {
-  form: FormGroup;
+  form!: FormGroup;
   role: UserRole = 'editor';
   showPassword = false;
   loading = false;
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private loadingService: LoadingService,
+  ) {
+    this.createForm();
+  }
+
+  createForm(): void {
     this.form = this.fb.group({
       nome: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -31,13 +38,13 @@ export class RegisterFormComponent {
     this.form.patchValue({ tipo: role });
   }
 
-  onSubmit(): void {
+  enviaRequest(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.loading = true;
+    this.loadingService.show('Entrando...');
     this.authService.register(this.form.value).subscribe({
       next: (res) => {
         console.log('Cadastrado!', res);
@@ -45,7 +52,7 @@ export class RegisterFormComponent {
       },
 
       error: () => {
-        this.loading = false;
+        this.loadingService.hide();
       }
     });
   }

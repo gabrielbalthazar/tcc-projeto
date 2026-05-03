@@ -2,14 +2,20 @@
   <h2>Criar conta</h2>
   <p class="subtitle">Escolha seu perfil e comece agora</p>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form" (ngSubmit)="enviaRequest()">
     <p class="role-label">Eu sou</p>
     <div class="role-selector">
-      <button type="button" [class.selected]="role === 'editor'" (click)="setRole('editor')">
+      <button
+      type="button"
+      [class.selected]="role === 'editor'"
+      (click)="setRole('editor')">
         <strong>Editor</strong>
         <span>Filmmaker / Editor</span>
       </button>
-      <button type="button" [class.selected]="role === 'cliente'" (click)="setRole('cliente')">
+      <button
+      type="button"
+      [class.selected]="role === 'cliente'"
+      (click)="setRole('cliente')">
         <strong>Cliente</strong>
         <span>Recebe entregas</span>
       </button>
@@ -39,7 +45,11 @@
       [maxlength]="12">
     </app-input-field>
 
-    <button mat-flat-button type="submit" [disabled]="loading" class="submit-btn">
+    <button
+    mat-flat-button
+    type="submit"
+    [disabled]="loading"
+    class="submit-btn">
       <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
       <span *ngIf="!loading">Criar Conta →</span>
     </button>

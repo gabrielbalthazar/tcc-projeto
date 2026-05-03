@@ -1,1 +1,6 @@
+<app-loading
+  [visible]="(loadingService.loading$ | async) ?? false"
+  [message]="(loadingService.message$ | async) ?? 'Aguarde...'">
+</app-loading>
+
 <router-outlet></router-outlet>

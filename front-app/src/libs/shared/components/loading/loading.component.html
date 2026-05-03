@@ -1,0 +1,7 @@
+ <div class="loading-overlay" *ngIf="visible">
+      <div class="loading-box">
+        <mat-spinner
+        [diameter]="48" color="primary"></mat-spinner>
+        <p class="loading-text" *ngIf="message">{{ message }}</p>
+      </div>
+    </div>
