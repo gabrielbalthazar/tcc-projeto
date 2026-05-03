@@ -1,0 +1,34 @@
+.auth-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+app-brand-panel {
+  flex: 1;
+  display: flex;
+}
+
+.auth-form-side {
+  width: 50%;
+  min-width: 420px;
+  background: var(--color-bg-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+@media (max-width: 768px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+
+  app-brand-panel {
+    min-height: 220px;
+  }
+
+  .auth-form-side {
+    width: 100%;
+    min-width: unset;
+  }
+}

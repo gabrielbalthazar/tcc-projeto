@@ -1,0 +1,34 @@
+<div class="form-card">
+  <h2>Bem-vindo de volta</h2>
+  <p class="subtitle">Entre na sua conta para continuar</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-input-field
+      formControlName="email"
+      label="E-mail"
+      type="email"
+      prefixIcon="mail_outline"
+      placeholder="seu@email.com">
+    </app-input-field>
+
+    <app-input-field
+      formControlName="senha"
+      label="Senha"
+      type="password"
+      prefixIcon="lock_outline"
+      placeholder="******"
+      [minlength]="6"
+      [maxlength]="12">
+    </app-input-field>
+
+    <div class="row-options">
+      <mat-checkbox formControlName="lembrarMe" color="primary">Lembrar-me</mat-checkbox>
+      <a class="forgot" href="#">Esqueceu a senha?</a>
+    </div>
+
+    <button mat-flat-button type="submit" [disabled]="loading" class="submit-btn">
+      <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+      <span *ngIf="!loading">Entrar →</span>
+    </button>
+  </form>
+</div>

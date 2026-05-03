@@ -1,0 +1,24 @@
+<div class="brand">
+  <div class="brand-logo">
+    <span class="logo-icon">▶</span>
+    <div>
+      <h1 class="logo-name">TakeHub</h1>
+      <p class="logo-sub">Gestão de Edição</p>
+    </div>
+  </div>
+  <div class="brand-content">
+    <h2 class="headline">
+      Gerencie seus projetos<br />de edição com<br />
+      <span class="highlight">eficiência total.</span>
+    </h2>
+    <p class="sub">
+      Controle revisões, entregas e feedbacks em um só lugar.<br />Para editores e clientes.
+    </p>
+  </div>
+  <div class="brand-metrics">
+    <div class="metric" *ngFor="let m of metricas">
+      <span class="metric-value">{{ m.value }}</span>
+      <span class="metric-label">{{ m.label }}</span>
+    </div>
+  </div>
+</div>

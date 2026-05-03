@@ -1,0 +1,54 @@
+<mat-form-field appearance="outline" class="field">
+  <mat-label>{{ label }}</mat-label>
+
+  <mat-icon matPrefix *ngIf="prefixIcon">{{ prefixIcon }}</mat-icon>
+
+  <textarea
+    *ngIf="type === 'textarea'"
+    matInput
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [maxLength]="maxLength || 9999"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+    rows="4"
+  >
+  </textarea>
+
+  <input
+    *ngIf="type !== 'textarea'"
+    matInput
+    [type]="resolvedType"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [maxLength]="maxLength || 9999"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+
+  <button
+    *ngIf="type === 'password'"
+    mat-icon-button
+    matSuffix
+    type="button"
+    (click)="showPassword = !showPassword"
+  >
+    <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+  </button>
+
+  <mat-hint align="end" *ngIf="maxLength"> {{ currentLength }} / {{ maxLength }} </mat-hint>
+
+  <mat-hint *ngIf="hint && !maxLength">{{ hint }}</mat-hint>
+
+  <mat-error *ngIf="errors?.['required']">{{ errorRequired }}</mat-error>
+  <mat-error *ngIf="errors?.['email']">{{ errorEmail }}</mat-error>
+  <mat-error *ngIf="errors?.['minlength']">
+    {{ errorMin || 'Mínimo de ' + errors?.['minlength']?.requiredLength + ' caracteres.' }}
+  </mat-error>
+  <mat-error *ngIf="errors?.['maxlength']">
+    {{ errorMax || 'Máximo de ' + errors?.['maxlength']?.requiredLength + ' caracteres.' }}
+  </mat-error>
+  <mat-error *ngIf="errors?.['pattern']">{{ errorPattern }}</mat-error>
+</mat-form-field>

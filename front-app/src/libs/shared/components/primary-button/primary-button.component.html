@@ -1,0 +1,4 @@
+<button mat-flat-button [type]="type" [disabled]="loading || disabled" class="primary-btn">
+  <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+  <span *ngIf="!loading">{{ label }}</span>
+</button>
