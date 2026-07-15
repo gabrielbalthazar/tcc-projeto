@@ -1,0 +1,16 @@
+<div class="item">
+  <div class="item-header">
+    <div class="name-status">
+      <span class="name">{{ projeto.nome }}</span>
+      <span class="badge" [ngClass]="statusClass">{{ statusLabel }}</span>
+    </div>
+    <span class="percent">{{ projeto.progresso }}%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="projeto.progresso"></div>
+  </div>
+  <div class="item-footer">
+    <span class="cliente">{{ projeto.cliente }}</span>
+    <span class="prazo">Prazo: {{ projeto.prazo | date: 'dd/MM/yyyy' }}</span>
+  </div>
+</div>

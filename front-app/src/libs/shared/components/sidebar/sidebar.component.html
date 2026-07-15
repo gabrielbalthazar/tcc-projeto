@@ -1,0 +1,36 @@
+<aside class="sidebar" [class.collapsed]="collapsed">
+  <div class="brand" (click)="toggleSidebar.emit()">
+    <div class="logo-icon">
+      <mat-icon>play_circle</mat-icon>
+    </div>
+    <div class="logo-text" *ngIf="!collapsed">
+      <span class="logo-name">TakeHub</span>
+      <span class="logo-sub">Gestão de Edição</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button
+      *ngFor="let item of navItems"
+      class="nav-item"
+      [class.active]="isActive(item.route)"
+      (click)="navigate(item.route)"
+      [matTooltip]="collapsed ? item.label : ''"
+      matTooltipPosition="right"
+    >
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span *ngIf="!collapsed">{{ item.label }}</span>
+    </button>
+  </nav>
+
+  <div class="avatar-wrap" *ngIf="!collapsed">
+    <div class="avatar">AS</div>
+    <div class="avatar-info">
+      <span class="avatar-name">Ana Silva</span>
+      <span class="avatar-role">Editora Sênior</span>
+    </div>
+  </div>
+  <div class="avatar-wrap-collapsed" *ngIf="collapsed">
+    <div class="avatar">AS</div>
+  </div>
+</aside>

@@ -1,0 +1,36 @@
+<div class="dashboard">
+  <div class="header">
+    <h1>Dashboard</h1>
+    <p>Visão geral dos seus projetos de edição</p>
+  </div>
+
+  <div class="stats-row">
+    <app-stat-card
+      *ngFor="let s of stats"
+      [icon]="s.icon"
+      [value]="s.value"
+      [label]="s.label"
+      [color]="s.color"
+    >
+    </app-stat-card>
+  </div>
+
+  <div class="main-content">
+    <div class="card projetos-card">
+      <div class="card-header">
+        <mat-icon class="card-icon">trending_up</mat-icon>
+        <h2>Progresso dos Projetos</h2>
+      </div>
+      <app-project-progress-item *ngFor="let p of projetos" [projeto]="p">
+      </app-project-progress-item>
+    </div>
+
+    <div class="card prazos-card">
+      <div class="card-header">
+        <mat-icon class="card-icon warning">warning_amber</mat-icon>
+        <h2>Prazos Próximos</h2>
+      </div>
+      <app-deadline-item *ngFor="let p of prazos" [prazo]="p"> </app-deadline-item>
+    </div>
+  </div>
+</div>

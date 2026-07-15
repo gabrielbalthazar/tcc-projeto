@@ -1,0 +1,147 @@
+.sidebar {
+  width: 210px;
+  min-height: 100vh;
+  background: #0f0d1a;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 12px;
+  transition: width 0.25s ease;
+  overflow: hidden;
+
+  &.collapsed {
+    width: 68px;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  cursor: pointer;
+  margin-bottom: 32px;
+  border-radius: 10px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background: var(--color-primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  mat-icon {
+    color: white;
+    font-size: 20px;
+  }
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+
+  .logo-name {
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .logo-sub {
+    color: #6b7280;
+    font-size: 11px;
+  }
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  mat-icon {
+    font-size: 20px;
+    min-width: 20px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: white;
+  }
+
+  &.active {
+    background: var(--color-primary);
+    color: white;
+  }
+}
+
+.avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 16px;
+}
+
+.avatar-wrap-collapsed {
+  display: flex;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 16px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.avatar-info {
+  display: flex;
+  flex-direction: column;
+
+  .avatar-name {
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .avatar-role {
+    color: #6b7280;
+    font-size: 11px;
+  }
+}

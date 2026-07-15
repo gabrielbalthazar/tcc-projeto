@@ -5,17 +5,21 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
 import { InputFieldComponent } from './components/input-field/input-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LoadingComponent } from './components/loading/loading.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { StatCardComponent } from './components/stat-card/stat-card.component';
 
 @NgModule({
   declarations: [
     PrimaryButtonComponent,
     InputFieldComponent,
+    StatCardComponent,
+    SidebarComponent,
   ],
   imports: [
     CommonModule,
@@ -27,6 +31,7 @@ import { LoadingComponent } from './components/loading/loading.component';
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatTooltipModule,
   ],
   exports: [
     PrimaryButtonComponent,
@@ -34,6 +39,9 @@ import { LoadingComponent } from './components/loading/loading.component';
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
+    StatCardComponent,
+    SidebarComponent,
+    MatTooltipModule,
   ]
 })
-export class SharedModule {}
+export class SharedModule { }
