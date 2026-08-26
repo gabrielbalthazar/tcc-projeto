@@ -1,12 +1,16 @@
 .sidebar {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
   width: 210px;
-  min-height: 100vh;
+  height: 100vh;
   background: #0f0d1a;
   display: flex;
   flex-direction: column;
   padding: 20px 12px;
   transition: width 0.25s ease;
   overflow: hidden;
+  flex-shrink: 0;
 
   &.collapsed {
     width: 68px;
