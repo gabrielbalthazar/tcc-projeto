@@ -1,0 +1,47 @@
+<div class="projeto-card">
+  <div class="card-top">
+    <h3 class="nome">{{ projeto.nome }}</h3>
+    <span class="badge" [ngClass]="statusClass">{{ statusLabel }}</span>
+  </div>
+
+  <p class="descricao">{{ projeto.descricao }}</p>
+
+  <div class="feedback-box" *ngIf="projeto.feedback">
+    <div class="feedback-header">
+      <mat-icon class="feedback-icon">cancel</mat-icon>
+      <span class="feedback-title">Revisão rejeitada pelo cliente</span>
+      <span class="feedback-count" *ngIf="projeto.feedback.rejeicoes">{{ projeto.feedback.rejeicoes }}x</span>
+    </div>
+    <p class="feedback-mensagem">"{{ projeto.feedback.mensagem }}"</p>
+    <span class="feedback-autor">
+      — {{ projeto.feedback.autor }} · {{ projeto.feedback.versao }} · {{ projeto.feedback.data | date: 'dd/MM/yyyy' }}
+    </span>
+  </div>
+
+  <div class="progresso-row">
+    <span class="progresso-label">Progresso</span>
+    <span class="progresso-percent">{{ projeto.progresso }}%</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" [style.width.%]="projeto.progresso"></div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-item">
+      <mat-icon>person</mat-icon>
+      {{ projeto.editor }}
+    </span>
+    <span class="footer-item">
+      <mat-icon>event</mat-icon>
+      {{ projeto.prazo | date: 'dd/MM/yyyy' }}
+    </span>
+  </div>
+
+  <div class="card-actions">
+    <span class="cliente">Cliente: <strong>{{ projeto.cliente }}</strong></span>
+    <button class="enviar-btn" type="button" (click)="enviarAoCliente.emit(projeto.id)">
+      <mat-icon>send</mat-icon>
+      Enviar ao Cliente
+    </button>
+  </div>
+</div>

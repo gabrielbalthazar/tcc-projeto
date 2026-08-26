@@ -1,0 +1,44 @@
+<div class="projetos">
+  <div class="header">
+    <div>
+      <h1>Projetos</h1>
+      <p>Gerencie seus projetos de edição de vídeo</p>
+    </div>
+    <button class="novo-projeto-btn" type="button" (click)="abrirNovoProjeto()">
+      <mat-icon>add</mat-icon>
+      Novo Projeto
+    </button>
+  </div>
+
+  <div class="filters-row">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        placeholder="Buscar por nome ou cliente..."
+        [value]="busca"
+        (input)="onBusca($event)"
+      />
+    </div>
+
+    <select class="status-select" (change)="onStatusChange($event)">
+      <option *ngFor="let filtro of statusFilters" [value]="filtro.value">{{ filtro.label }}</option>
+    </select>
+  </div>
+
+  <div class="projetos-grid" *ngIf="projetosFiltrados.length; else vazio">
+    <app-projeto-card
+      *ngFor="let projeto of projetosFiltrados"
+      [projeto]="projeto"
+      (enviarAoCliente)="enviarAoCliente($event)"
+    >
+    </app-projeto-card>
+  </div>
+
+  <ng-template #vazio>
+    <div class="empty-state">
+      <mat-icon>folder_off</mat-icon>
+      <p>Nenhum projeto encontrado.</p>
+    </div>
+  </ng-template>
+</div>

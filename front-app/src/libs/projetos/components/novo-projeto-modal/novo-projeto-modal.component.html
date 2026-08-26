@@ -1,0 +1,52 @@
+<div class="modal">
+  <div class="modal-header">
+    <h2>Criar Novo Projeto</h2>
+    <button class="close-btn" type="button" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="modal-form" (ngSubmit)="criar()">
+    <app-input-field
+      label="Nome do Projeto"
+      placeholder="Ex: Campanha Verão 2026"
+      formControlName="nome"
+      errorRequired="Informe o nome do projeto."
+    >
+    </app-input-field>
+
+    <app-input-field
+      label="Cliente"
+      placeholder="Nome do cliente"
+      formControlName="cliente"
+      errorRequired="Informe o cliente."
+    >
+    </app-input-field>
+
+    <app-input-field
+      label="Editor Responsável"
+      placeholder="Nome do editor"
+      formControlName="editor"
+      errorRequired="Informe o editor responsável."
+    >
+    </app-input-field>
+
+    <app-input-field
+      label="Prazo"
+      type="date"
+      formControlName="prazo"
+      errorRequired="Informe o prazo."
+    >
+    </app-input-field>
+
+    <app-input-field
+      label="Descrição"
+      type="textarea"
+      placeholder="Breve descrição do projeto"
+      formControlName="descricao"
+    >
+    </app-input-field>
+
+    <app-primary-button label="Criar Projeto" type="submit" [loading]="loading"></app-primary-button>
+  </form>
+</div>
