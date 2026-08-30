@@ -1,0 +1,22 @@
+<div class="tarefa-card">
+  <div class="card-top">
+    <h3 class="titulo">{{ tarefa.titulo }}</h3>
+    <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+  </div>
+
+  <p class="descricao">{{ tarefa.descricao }}</p>
+
+  <span class="badge" [ngClass]="prioridadeClass">{{ prioridadeLabel }}</span>
+
+  <div class="card-meta">
+    <span class="meta-item">
+      <mat-icon>person</mat-icon>
+      {{ tarefa.responsavel }}
+    </span>
+    <span class="meta-projeto">{{ tarefa.projeto }}</span>
+  </div>
+
+  <select class="status-select" [value]="tarefa.status" (change)="onStatusChange($event)">
+    <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+  </select>
+</div>

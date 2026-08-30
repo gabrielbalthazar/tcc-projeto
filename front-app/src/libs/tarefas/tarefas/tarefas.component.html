@@ -1,0 +1,51 @@
+<div class="tarefas">
+  <div class="header">
+    <div>
+      <h1>Tarefas</h1>
+      <p>Quadro Kanban de tarefas de edição</p>
+    </div>
+    <div class="header-actions">
+      <select class="projeto-select" (change)="onProjetoChange($event)">
+        <option value="todos">Todos os projetos</option>
+        <option *ngFor="let projeto of projetos" [value]="projeto">{{ projeto }}</option>
+      </select>
+      <button class="nova-tarefa-btn" type="button" (click)="abrirNovaTarefa()">
+        <mat-icon>add</mat-icon>
+        Nova Tarefa
+      </button>
+    </div>
+  </div>
+
+  <div class="kanban">
+    <section
+      class="coluna"
+      *ngFor="let coluna of colunas"
+      [style.--accent]="coluna.accent"
+    >
+      <div class="coluna-header">
+        <span class="coluna-titulo">{{ coluna.label }}</span>
+        <span class="coluna-count">{{ coluna.tarefas.length }}</span>
+      </div>
+
+      <div
+        class="coluna-body"
+        cdkDropList
+        [id]="'coluna-' + coluna.status"
+        [cdkDropListData]="coluna.tarefas"
+        [cdkDropListConnectedTo]="dropListIds"
+        (cdkDropListDropped)="drop($event, coluna.status)"
+      >
+        <div class="drag-item" *ngFor="let tarefa of coluna.tarefas" cdkDrag>
+          <div class="drag-placeholder" *cdkDragPlaceholder></div>
+          <app-tarefa-card
+            [tarefa]="tarefa"
+            (mudarStatus)="onMudarStatus($event)"
+          >
+          </app-tarefa-card>
+        </div>
+
+        <p class="coluna-vazia" *ngIf="!coluna.tarefas.length">Sem tarefas</p>
+      </div>
+    </section>
+  </div>
+</div>

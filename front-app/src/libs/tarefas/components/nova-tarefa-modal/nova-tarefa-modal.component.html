@@ -1,0 +1,64 @@
+<div class="modal">
+  <div class="modal-header">
+    <h2>Criar Nova Tarefa</h2>
+    <button class="close-btn" type="button" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="modal-form" (ngSubmit)="criar()">
+    <app-input-field
+      label="Título da Tarefa"
+      placeholder="Ex: Color grading"
+      formControlName="titulo"
+      errorRequired="Informe o título da tarefa."
+    >
+    </app-input-field>
+
+    <app-input-field
+      label="Descrição"
+      type="textarea"
+      placeholder="Breve descrição da tarefa"
+      formControlName="descricao"
+    >
+    </app-input-field>
+
+    <div class="select-field">
+      <label>Prioridade</label>
+      <select formControlName="prioridade">
+        <option *ngFor="let p of prioridades" [value]="p.value">{{ p.label }}</option>
+      </select>
+    </div>
+
+    <div class="select-field">
+      <label>Responsável</label>
+      <select formControlName="responsavel">
+        <option value="" disabled>Selecione um responsável</option>
+        <option *ngFor="let r of data.responsaveis" [value]="r">{{ r }}</option>
+      </select>
+      <span class="field-error" *ngIf="responsavel.touched && responsavel.invalid">
+        Selecione o responsável.
+      </span>
+    </div>
+
+    <div class="select-field">
+      <label>Projeto</label>
+      <select formControlName="projeto">
+        <option value="" disabled>Selecione um projeto</option>
+        <option *ngFor="let p of data.projetos" [value]="p">{{ p }}</option>
+      </select>
+      <span class="field-error" *ngIf="projeto.touched && projeto.invalid">
+        Selecione o projeto.
+      </span>
+    </div>
+
+    <div class="select-field">
+      <label>Etapa inicial</label>
+      <select formControlName="status">
+        <option *ngFor="let s of status" [value]="s.value">{{ s.label }}</option>
+      </select>
+    </div>
+
+    <app-primary-button label="Criar Tarefa" type="submit" [loading]="loading"></app-primary-button>
+  </form>
+</div>

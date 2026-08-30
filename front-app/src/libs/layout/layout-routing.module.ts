@@ -18,6 +18,11 @@ const routes: Routes = [
           import('../projetos/projetos.module').then(m => m.ProjetosModule)
       },
       {
+        path: 'tarefas',
+        loadChildren: () =>
+          import('../tarefas/tarefas.module').then(m => m.TarefasModule)
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

@@ -1,0 +1,113 @@
+.tarefa-card {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.titulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.drag-handle {
+  flex-shrink: 0;
+  color: #d1d5db;
+  cursor: grab;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.descricao {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 6px 0 10px;
+  line-height: 1.5;
+}
+
+.badge {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.badge-baixa {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.badge-media {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.badge-alta {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 12px 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #6b7280;
+
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+    color: #9ca3af;
+  }
+}
+
+.meta-projeto {
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
+.status-select {
+  width: 100%;
+  height: 38px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #f9fafb;
+  color: #111827;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 10px;
+  cursor: pointer;
+}
