@@ -9,8 +9,9 @@
   flex-direction: column;
   padding: 20px 12px;
   transition: width 0.25s ease;
-  overflow: hidden;
+  overflow: visible;
   flex-shrink: 0;
+  z-index: 10;
 
   &.collapsed {
     width: 68px;
@@ -103,21 +104,44 @@
   }
 }
 
-.avatar-wrap {
+.profile {
+  position: relative;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.profile-trigger {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 10px 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: 16px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  text-align: left;
+  transition: background 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .chevron {
+    margin-left: auto;
+    color: #6b7280;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s;
+  }
 }
 
-.avatar-wrap-collapsed {
-  display: flex;
+.profile.collapsed .profile-trigger {
   justify-content: center;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: 16px;
+  gap: 0;
 }
 
 .avatar {
@@ -134,18 +158,100 @@
   font-weight: 700;
 }
 
-.avatar-info {
+.profile-info {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
-  .avatar-name {
+  .profile-name {
     color: white;
     font-size: 13px;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .avatar-role {
+  .profile-role {
     color: #6b7280;
     font-size: 11px;
+    white-space: nowrap;
+  }
+}
+
+.profile-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - 4px);
+  padding: 6px;
+  background: #1a1625;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  z-index: 20;
+}
+
+.profile:hover .profile-menu,
+.profile.open .profile-menu,
+.profile:focus-within .profile-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.profile:hover .profile-trigger .chevron {
+  transform: rotate(180deg);
+}
+
+.profile.collapsed .profile-menu {
+  left: calc(100% + 8px);
+  right: auto;
+  bottom: 0;
+  width: 180px;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  background: transparent;
+  color: #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+  }
+
+  &.danger {
+    color: #f87171;
+
+    &:hover {
+      background: rgba(248, 113, 113, 0.12);
+      color: #fca5a5;
+    }
   }
 }

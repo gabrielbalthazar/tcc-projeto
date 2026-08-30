@@ -1,0 +1,57 @@
+<div class="minha-conta" *ngIf="user">
+  <div class="header">
+    <div>
+      <h1>Minha Conta</h1>
+      <p>Informações do seu perfil</p>
+    </div>
+    <button class="sair-btn" type="button" (click)="sair()">
+      <mat-icon>logout</mat-icon>
+      Sair da conta
+    </button>
+  </div>
+
+  <div class="perfil-card">
+    <div class="perfil-topo">
+      <div class="avatar-grande">{{ iniciais }}</div>
+      <div class="perfil-identidade">
+        <h2>{{ user.nome }}</h2>
+        <span class="cargo" *ngIf="user.cargo">{{ user.cargo }}</span>
+        <span class="tipo-badge">{{ tipoLabel }}</span>
+      </div>
+    </div>
+
+    <div class="perfil-dados">
+      <div class="dado">
+        <span class="dado-label">
+          <mat-icon>mail</mat-icon>
+          E-mail
+        </span>
+        <span class="dado-valor">{{ user.email }}</span>
+      </div>
+
+      <div class="dado" *ngIf="user.telefone">
+        <span class="dado-label">
+          <mat-icon>call</mat-icon>
+          Telefone
+        </span>
+        <span class="dado-valor">{{ user.telefone }}</span>
+      </div>
+
+      <div class="dado">
+        <span class="dado-label">
+          <mat-icon>badge</mat-icon>
+          Tipo de conta
+        </span>
+        <span class="dado-valor">{{ tipoLabel }}</span>
+      </div>
+
+      <div class="dado">
+        <span class="dado-label">
+          <mat-icon>event</mat-icon>
+          Membro desde
+        </span>
+        <span class="dado-valor">{{ user.criadoEm | date: 'dd/MM/yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

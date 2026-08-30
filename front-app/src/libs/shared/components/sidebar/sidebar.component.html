@@ -23,14 +23,31 @@
     </button>
   </nav>
 
-  <div class="avatar-wrap" *ngIf="!collapsed">
-    <div class="avatar">AS</div>
-    <div class="avatar-info">
-      <span class="avatar-name">Ana Silva</span>
-      <span class="avatar-role">Editora Sênior</span>
+  <div class="profile" [class.open]="menuOpen" [class.collapsed]="collapsed">
+    <div class="profile-menu" role="menu">
+      <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
+        <mat-icon>account_circle</mat-icon>
+        <span>Minha conta</span>
+      </button>
+      <button class="profile-menu-item danger" type="button" role="menuitem" (click)="sair()">
+        <mat-icon>logout</mat-icon>
+        <span>Sair da conta</span>
+      </button>
     </div>
-  </div>
-  <div class="avatar-wrap-collapsed" *ngIf="collapsed">
-    <div class="avatar">AS</div>
+
+    <button
+      class="profile-trigger"
+      type="button"
+      (click)="menuOpen = !menuOpen"
+      [matTooltip]="collapsed ? (user?.nome || 'Conta') : ''"
+      matTooltipPosition="right"
+    >
+      <div class="avatar">{{ iniciais }}</div>
+      <div class="profile-info" *ngIf="!collapsed">
+        <span class="profile-name">{{ user?.nome }}</span>
+        <span class="profile-role">{{ user?.cargo }}</span>
+      </div>
+      <mat-icon class="chevron" *ngIf="!collapsed">expand_less</mat-icon>
+    </button>
   </div>
 </aside>

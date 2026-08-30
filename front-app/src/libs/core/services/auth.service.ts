@@ -32,6 +32,19 @@ export class AuthService {
     localStorage.removeItem(this.TOKEN_KEY);
   }
 
+  getCurrentUser(): Observable<User> {
+    // return this.http.get<User>(`${this.API}/me`);
+    return of({
+      id: '1',
+      nome: 'Ana Silva',
+      email: 'ana.silva@takehub.com',
+      tipo: 'editor',
+      cargo: 'Editora Sênior',
+      telefone: '+55 11 98888-1234',
+      criadoEm: new Date('2025-01-15'),
+    } as User);
+  }
+
   isAuthenticated(): boolean {
     return !!localStorage.getItem(this.TOKEN_KEY);
   }

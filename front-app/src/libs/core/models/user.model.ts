@@ -6,6 +6,8 @@ export interface User {
   email: string;
   tipo: UserRole;
   criadoEm: Date;
+  cargo?: string;
+  telefone?: string;
 }
 
 export interface LoginPayload {
