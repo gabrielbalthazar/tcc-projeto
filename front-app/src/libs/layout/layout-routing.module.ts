@@ -23,6 +23,11 @@ const routes: Routes = [
           import('../tarefas/tarefas.module').then(m => m.TarefasModule)
       },
       {
+        path: 'timeline',
+        loadChildren: () =>
+          import('../timeline/timeline.module').then(m => m.TimelineModule)
+      },
+      {
         path: 'minha-conta',
         loadChildren: () =>
           import('../minha-conta/minha-conta.module').then(m => m.MinhaContaModule)

@@ -1,0 +1,103 @@
+<div class="timeline-page">
+  <div class="header">
+    <div>
+      <h1>Timeline</h1>
+      <p>Histórico de revisões e entregas dos projetos</p>
+    </div>
+    <select class="projeto-select" (change)="onProjetoChange($event)">
+      <option value="todos">Todos os projetos</option>
+      <option *ngFor="let projeto of projetos" [value]="projeto">{{ projeto }}</option>
+    </select>
+  </div>
+
+  <div class="lista">
+    <article
+      class="projeto-card"
+      *ngFor="let projeto of projetosVisiveis; trackBy: trackByProjeto"
+    >
+      <header
+        class="projeto-header"
+        (click)="toggleColapso(projeto.id)"
+      >
+        <span
+          class="status-dot"
+          [style.background]="metaDe(projeto.status).color"
+        ></span>
+        <div class="projeto-info">
+          <h2>{{ projeto.projeto }}</h2>
+          <span class="projeto-sub">
+            {{ projeto.cliente }} · {{ contarAtualizacoes(projeto) }} atualizações
+          </span>
+        </div>
+        <span
+          class="status-badge"
+          [style.color]="metaDe(projeto.status).color"
+          [style.background]="metaDe(projeto.status).bg"
+        >
+          {{ metaDe(projeto.status).label }}
+        </span>
+        <mat-icon class="chevron">
+          {{ isColapsado(projeto.id) ? 'expand_more' : 'expand_less' }}
+        </mat-icon>
+      </header>
+
+      <ol class="eventos" *ngIf="!isColapsado(projeto.id)">
+        <li
+          class="evento"
+          *ngFor="let evento of projeto.eventos; trackBy: trackByEvento"
+        >
+          <div class="marcador">
+            <span
+              class="marcador-dot"
+              [style.background]="corDoMarcador(evento)"
+            ></span>
+          </div>
+
+          <div class="evento-conteudo">
+            <div class="evento-titulo-row">
+              <mat-icon
+                class="evento-icon"
+                [style.color]="corDoMarcador(evento)"
+              >
+                {{ iconeDoMarcador(evento) }}
+              </mat-icon>
+              <span class="evento-titulo">{{ evento.titulo }}</span>
+              <span
+                class="status-badge"
+                [style.color]="metaDe(evento.status).color"
+                [style.background]="metaDe(evento.status).bg"
+              >
+                {{ metaDe(evento.status).label }}
+              </span>
+              <span class="arquivo-chip" *ngIf="evento.tipo === 'versao' && evento.arquivo">
+                <mat-icon>description</mat-icon>
+                {{ evento.arquivo.nome }}
+              </span>
+            </div>
+
+            <span class="evento-data">{{ evento.data | date: 'dd \'de\' MMM. \'de\' y' }}</span>
+
+            <div class="comentario-box" *ngIf="evento.comentario">
+              <p class="comentario-mensagem">"{{ evento.comentario.mensagem }}"</p>
+              <span class="comentario-autor">— {{ evento.comentario.autor }}</span>
+            </div>
+
+            <div class="entrega-box" *ngIf="evento.tipo === 'entrega' && evento.arquivo">
+              <mat-icon class="entrega-icon">movie</mat-icon>
+              <div class="entrega-info">
+                <span class="entrega-nome">{{ evento.arquivo.nome }}</span>
+                <span class="entrega-autor" *ngIf="evento.arquivo.enviadoPor">
+                  Enviado por {{ evento.arquivo.enviadoPor }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </article>
+
+    <p class="lista-vazia" *ngIf="!projetosVisiveis.length">
+      Nenhuma atualização para exibir.
+    </p>
+  </div>
+</div>
