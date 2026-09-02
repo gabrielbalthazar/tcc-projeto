@@ -23,6 +23,13 @@ export interface RegisterPayload {
   tipo: UserRole;
 }
 
+export interface UpdateUserPayload {
+  nome: string;
+  email: string;
+  telefone?: string;
+  cargo?: string;
+}
+
 export interface AuthResponse {
   token: string;
   user: User;

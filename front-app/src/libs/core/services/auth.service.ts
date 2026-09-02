@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginPayload, RegisterPayload, AuthResponse, User } from '../models/user.model';
+import {
+  LoginPayload,
+  RegisterPayload,
+  AuthResponse,
+  User,
+  UpdateUserPayload,
+} from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
   private readonly API = 'http://localhost:3000/api/auth';
   private readonly TOKEN_KEY = 'takehub_token';
+
+  private readonly currentUser$ = new BehaviorSubject<User>(this.getMockUser());
 
   constructor(private http: HttpClient) {}
 
@@ -34,15 +42,22 @@ export class AuthService {
 
   getCurrentUser(): Observable<User> {
     // return this.http.get<User>(`${this.API}/me`);
-    return of({
-      id: '1',
-      nome: 'Ana Silva',
-      email: 'ana.silva@takehub.com',
-      tipo: 'editor',
-      cargo: 'Editora Sênior',
-      telefone: '+55 11 98888-1234',
-      criadoEm: new Date('2025-01-15'),
-    } as User);
+    return this.currentUser$.asObservable();
+  }
+
+  updateCurrentUser(dados: UpdateUserPayload): Observable<User> {
+    // return this.http.put<User>(`${this.API}/me`, dados).pipe(
+    //   tap(user => this.currentUser$.next(user))
+    // );
+    const atualizado: User = {
+      ...this.currentUser$.value,
+      nome: dados.nome,
+      email: dados.email,
+      telefone: dados.telefone,
+      cargo: dados.cargo,
+    };
+    this.currentUser$.next(atualizado);
+    return of(atualizado);
   }
 
   isAuthenticated(): boolean {
@@ -51,5 +66,17 @@ export class AuthService {
 
   private saveToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);
+  }
+
+  private getMockUser(): User {
+    return {
+      id: '1',
+      nome: 'Ana Silva',
+      email: 'ana.silva@takehub.com',
+      tipo: 'editor',
+      cargo: 'Editora Sênior',
+      telefone: '+55 11 98888-1234',
+      criadoEm: new Date('2025-01-15'),
+    };
   }
 }

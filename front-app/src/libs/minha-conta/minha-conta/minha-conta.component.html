@@ -4,10 +4,21 @@
       <h1>Minha Conta</h1>
       <p>Informações do seu perfil</p>
     </div>
-    <button class="sair-btn" type="button" (click)="sair()">
-      <mat-icon>logout</mat-icon>
-      Sair da conta
-    </button>
+    <div class="header-acoes">
+      <button
+        *ngIf="!editando"
+        class="editar-btn"
+        type="button"
+        (click)="abrirEdicao()"
+      >
+        <mat-icon>edit</mat-icon>
+        Editar perfil
+      </button>
+      <button class="sair-btn" type="button" (click)="sair()">
+        <mat-icon>logout</mat-icon>
+        Sair da conta
+      </button>
+    </div>
   </div>
 
   <div class="perfil-card">
@@ -20,7 +31,7 @@
       </div>
     </div>
 
-    <div class="perfil-dados">
+    <div class="perfil-dados" *ngIf="!editando">
       <div class="dado">
         <span class="dado-label">
           <mat-icon>mail</mat-icon>
@@ -29,12 +40,20 @@
         <span class="dado-valor">{{ user.email }}</span>
       </div>
 
-      <div class="dado" *ngIf="user.telefone">
+      <div class="dado">
         <span class="dado-label">
           <mat-icon>call</mat-icon>
           Telefone
         </span>
-        <span class="dado-valor">{{ user.telefone }}</span>
+        <span class="dado-valor">{{ user.telefone || '—' }}</span>
+      </div>
+
+      <div class="dado">
+        <span class="dado-label">
+          <mat-icon>work</mat-icon>
+          Cargo
+        </span>
+        <span class="dado-valor">{{ user.cargo || '—' }}</span>
       </div>
 
       <div class="dado">
@@ -53,5 +72,68 @@
         <span class="dado-valor">{{ user.criadoEm | date: 'dd/MM/yyyy' }}</span>
       </div>
     </div>
+
+    <form
+      class="perfil-form"
+      *ngIf="editando"
+      [formGroup]="form"
+      (ngSubmit)="salvar()"
+    >
+      <div class="campo">
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" formControlName="nome" autocomplete="name" />
+        <span
+          class="erro"
+          *ngIf="form.controls.nome.touched && form.controls.nome.invalid"
+        >
+          Informe seu nome (mínimo de 2 caracteres).
+        </span>
+      </div>
+
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" formControlName="email" autocomplete="email" />
+        <span
+          class="erro"
+          *ngIf="form.controls.email.touched && form.controls.email.invalid"
+        >
+          Informe um e-mail válido.
+        </span>
+      </div>
+
+      <div class="campo">
+        <label for="telefone">Telefone</label>
+        <input
+          id="telefone"
+          type="text"
+          formControlName="telefone"
+          autocomplete="tel"
+          placeholder="+55 11 90000-0000"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="cargo">Cargo</label>
+        <input
+          id="cargo"
+          type="text"
+          formControlName="cargo"
+          placeholder="Ex: Editor de vídeo"
+        />
+      </div>
+
+      <div class="form-acoes">
+        <button type="button" class="btn-secundario" (click)="cancelarEdicao()">
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn-primario"
+          [disabled]="form.invalid || form.pristine"
+        >
+          Salvar alterações
+        </button>
+      </div>
+    </form>
   </div>
 </div>

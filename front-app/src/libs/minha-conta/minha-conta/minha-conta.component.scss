@@ -26,13 +26,20 @@
   }
 }
 
-.sair-btn {
+.header-acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sair-btn,
+.editar-btn {
   display: flex;
   align-items: center;
   gap: 8px;
   border: 1px solid var(--color-border);
   background: white;
-  color: #dc2626;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 600;
@@ -47,10 +54,23 @@
     width: 18px;
     height: 18px;
   }
+}
+
+.sair-btn {
+  color: #dc2626;
 
   &:hover {
     background: #fef2f2;
     border-color: #fecaca;
+  }
+}
+
+.editar-btn {
+  color: var(--color-primary);
+
+  &:hover {
+    background: #faf5ff;
+    border-color: #ddd6fe;
   }
 }
 
@@ -152,4 +172,92 @@
   font-weight: 500;
   color: #111827;
   text-align: right;
+}
+
+.perfil-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px 28px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  input {
+    height: 42px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #111827;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+    }
+  }
+}
+
+.erro {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.form-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.btn-secundario,
+.btn-primario {
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secundario {
+  border: 1px solid var(--color-border);
+  background: white;
+  color: #374151;
+
+  &:hover {
+    background: #f9fafb;
+  }
+}
+
+.btn-primario {
+  border: none;
+  background: var(--color-primary);
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+  }
+
+  &:disabled {
+    background: #c4b5fd;
+    cursor: not-allowed;
+  }
 }
