@@ -1,0 +1,145 @@
+<div class="aprovacao" *ngIf="material">
+  <header class="material-header">
+    <h1>{{ material.projeto }}</h1>
+    <div class="meta">
+      <span class="meta-item">
+        <mat-icon>person</mat-icon>
+        {{ material.editor }}
+      </span>
+      <span class="meta-item">
+        <mat-icon>event</mat-icon>
+        {{ dataFormatada }}
+      </span>
+      <span class="versao-badge">Versão {{ material.versaoAtual }}</span>
+    </div>
+  </header>
+
+  <section class="editor-msg">
+    <mat-icon class="editor-msg-icon">chat_bubble_outline</mat-icon>
+    <div class="editor-msg-body">
+      <span class="editor-msg-label">Mensagem do editor</span>
+      <p>{{ material.mensagemEditor }}</p>
+    </div>
+  </section>
+
+  <section class="player-card">
+    <div class="player">
+      <button
+        *ngIf="!videoAberto"
+        class="play-btn"
+        type="button"
+        aria-label="Reproduzir vídeo"
+        (click)="toggleVideo()"
+      >
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+
+      <video
+        *ngIf="videoAberto"
+        class="player-video"
+        controls
+        [src]="material.arquivo.url || ''"
+      ></video>
+
+      <button class="download-btn" type="button" (click)="baixarArquivo()">
+        <mat-icon>download</mat-icon>
+        Baixar arquivo
+      </button>
+    </div>
+
+    <div class="arquivo-row">
+      <mat-icon>movie</mat-icon>
+      <span>{{ material.arquivo.nome }}</span>
+    </div>
+  </section>
+
+  <section class="historico">
+    <h2>Histórico de revisões</h2>
+
+    <div
+      class="revisao"
+      *ngFor="let revisao of material.historico; trackBy: trackByVersao"
+      [class.aprovada]="revisao.status === 'aprovada'"
+    >
+      <mat-icon class="revisao-icon">
+        {{ revisao.status === 'aprovada' ? 'check_circle' : 'cancel' }}
+      </mat-icon>
+      <div class="revisao-body">
+        <span class="revisao-titulo">
+          Versão {{ revisao.versao }} — {{ revisao.status === 'aprovada' ? 'Aprovada' : 'Rejeitada' }}
+        </span>
+        <p class="revisao-comentario">"{{ revisao.comentario }}"</p>
+      </div>
+    </div>
+
+    <p class="historico-vazio" *ngIf="!material.historico.length">
+      Nenhuma revisão anterior neste projeto.
+    </p>
+  </section>
+
+  <section class="avaliacao-card">
+    <h2>Sua avaliação</h2>
+
+    <div class="opcoes" *ngIf="!enviado">
+      <button
+        class="opcao"
+        type="button"
+        [class.selecionada]="decisao === 'aprovar'"
+        (click)="selecionar('aprovar')"
+      >
+        <span class="radio"></span>
+        <mat-icon class="opcao-icon aprovar">check_circle</mat-icon>
+        <span class="opcao-txt">
+          <strong>Aprovar</strong>
+          <small>O projeto está finalizado</small>
+        </span>
+      </button>
+
+      <button
+        class="opcao"
+        type="button"
+        [class.selecionada]="decisao === 'ajustes'"
+        (click)="selecionar('ajustes')"
+      >
+        <span class="radio"></span>
+        <mat-icon class="opcao-icon ajustes">cancel</mat-icon>
+        <span class="opcao-txt">
+          <strong>Solicitar ajustes</strong>
+          <small>Preciso de alterações</small>
+        </span>
+      </button>
+    </div>
+
+    <div class="resultado" *ngIf="enviado" [class.ok]="aprovado">
+      <mat-icon>{{ aprovado ? 'check_circle' : 'cancel' }}</mat-icon>
+      <span>
+        {{ aprovado
+          ? 'Você aprovou este material. O editor foi notificado.'
+          : 'Você solicitou ajustes. O editor foi notificado e enviará uma nova versão.' }}
+      </span>
+    </div>
+
+    <label class="comentario-label" for="comentario">
+      Comentário {{ enviado ? '' : '(opcional)' }}
+    </label>
+    <textarea
+      id="comentario"
+      class="comentario-input"
+      rows="3"
+      [(ngModel)]="comentario"
+      [disabled]="enviado"
+      placeholder="Ex: Ficou ótimo! Parabéns pelo trabalho."
+    ></textarea>
+
+    <button
+      class="enviar-btn"
+      type="button"
+      [class.aprovar]="decisao === 'aprovar' && !enviado"
+      [class.ajustes]="decisao === 'ajustes' && !enviado"
+      [disabled]="!podeEnviar"
+      (click)="enviar()"
+    >
+      {{ textoBotao }}
+    </button>
+  </section>
+</div>

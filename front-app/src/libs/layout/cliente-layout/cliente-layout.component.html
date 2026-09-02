@@ -1,0 +1,14 @@
+<div class="layout">
+  <app-sidebar
+    modo="cliente"
+    [collapsed]="sidebarCollapsed"
+    [empresa]="empresa"
+    [usuario]="usuario"
+    [projeto]="projeto"
+    (toggleSidebar)="sidebarCollapsed = !sidebarCollapsed"
+  >
+  </app-sidebar>
+  <main class="content" [class.expanded]="sidebarCollapsed">
+    <router-outlet></router-outlet>
+  </main>
+</div>
