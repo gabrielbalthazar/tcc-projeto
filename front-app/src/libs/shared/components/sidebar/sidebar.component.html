@@ -1,53 +1,119 @@
-<aside class="sidebar" [class.collapsed]="collapsed">
+<aside class="sidebar" [class.collapsed]="collapsed" [class.cliente]="isCliente">
   <div class="brand" (click)="toggleSidebar.emit()">
     <div class="logo-icon">
       <mat-icon>play_circle</mat-icon>
     </div>
     <div class="logo-text" *ngIf="!collapsed">
       <span class="logo-name">TakeHub</span>
-      <span class="logo-sub">Gestão de Edição</span>
+      <span class="logo-sub">{{ logoSubtitulo }}</span>
     </div>
   </div>
 
-  <nav class="nav">
-    <button
-      *ngFor="let item of navItems"
-      class="nav-item"
-      [class.active]="isActive(item.route)"
-      (click)="navigate(item.route)"
-      [matTooltip]="collapsed ? item.label : ''"
-      matTooltipPosition="right"
-    >
-      <mat-icon>{{ item.icon }}</mat-icon>
-      <span *ngIf="!collapsed">{{ item.label }}</span>
-    </button>
-  </nav>
-
-  <div class="profile" [class.open]="menuOpen" [class.collapsed]="collapsed">
-    <div class="profile-menu" role="menu">
-      <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
-        <mat-icon>account_circle</mat-icon>
-        <span>Minha conta</span>
-      </button>
-      <button class="profile-menu-item danger" type="button" role="menuitem" (click)="sair()">
-        <mat-icon>logout</mat-icon>
-        <span>Sair da conta</span>
-      </button>
-    </div>
-
-    <button
-      class="profile-trigger"
-      type="button"
-      (click)="menuOpen = !menuOpen"
-      [matTooltip]="collapsed ? (user?.nome || 'Conta') : ''"
-      matTooltipPosition="right"
-    >
-      <div class="avatar">{{ iniciais }}</div>
-      <div class="profile-info" *ngIf="!collapsed">
-        <span class="profile-name">{{ user?.nome }}</span>
-        <span class="profile-role">{{ user?.cargo }}</span>
+  <!-- Modo cliente: perfil no topo + contexto do projeto -->
+  <ng-container *ngIf="isCliente">
+    <div class="profile top" [class.open]="menuOpen" [class.collapsed]="collapsed">
+      <div class="profile-menu" role="menu">
+        <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
+          <mat-icon>account_circle</mat-icon>
+          <span>Minha conta</span>
+        </button>
+        <button class="profile-menu-item danger" type="button" role="menuitem" (click)="sair()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair da conta</span>
+        </button>
       </div>
-      <mat-icon class="chevron" *ngIf="!collapsed">expand_less</mat-icon>
+
+      <button
+        class="profile-trigger"
+        type="button"
+        (click)="menuOpen = !menuOpen"
+        [matTooltip]="collapsed ? nomeExibido : ''"
+        matTooltipPosition="right"
+      >
+        <div class="avatar">{{ iniciais }}</div>
+        <div class="profile-info" *ngIf="!collapsed">
+          <span class="profile-name">{{ nomeExibido }}</span>
+          <span class="profile-role">{{ contatoExibido }}</span>
+        </div>
+        <mat-icon class="chevron" *ngIf="!collapsed">expand_more</mat-icon>
+      </button>
+    </div>
+
+    <div class="client-context" *ngIf="!collapsed">
+      <div class="context-block" *ngIf="empresa">
+        <span class="context-label">Empresa</span>
+        <span class="context-value">{{ empresa }}</span>
+      </div>
+
+      <div class="projeto-box" *ngIf="projeto">
+        <span class="context-label">Projeto</span>
+        <span class="projeto-nome">{{ projeto.nome }}</span>
+        <div class="projeto-badges">
+          <span class="badge">{{ projeto.versao }}</span>
+          <span class="badge status" [ngClass]="projeto.statusTipo">
+            <mat-icon>{{ statusIcon }}</mat-icon>
+            {{ projeto.statusLabel }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-spacer"></div>
+
+    <button
+      class="sair-link"
+      type="button"
+      (click)="sair()"
+      [matTooltip]="collapsed ? 'Sair' : ''"
+      matTooltipPosition="right"
+    >
+      <mat-icon>logout</mat-icon>
+      <span *ngIf="!collapsed">Sair</span>
     </button>
-  </div>
+  </ng-container>
+
+  <!-- Modo interno: navegação + perfil no rodapé -->
+  <ng-container *ngIf="!isCliente">
+    <nav class="nav">
+      <button
+        *ngFor="let item of navItems"
+        class="nav-item"
+        [class.active]="isActive(item.route)"
+        (click)="navigate(item.route)"
+        [matTooltip]="collapsed ? item.label : ''"
+        matTooltipPosition="right"
+      >
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span *ngIf="!collapsed">{{ item.label }}</span>
+      </button>
+    </nav>
+
+    <div class="profile" [class.open]="menuOpen" [class.collapsed]="collapsed">
+      <div class="profile-menu" role="menu">
+        <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
+          <mat-icon>account_circle</mat-icon>
+          <span>Minha conta</span>
+        </button>
+        <button class="profile-menu-item danger" type="button" role="menuitem" (click)="sair()">
+          <mat-icon>logout</mat-icon>
+          <span>Sair da conta</span>
+        </button>
+      </div>
+
+      <button
+        class="profile-trigger"
+        type="button"
+        (click)="menuOpen = !menuOpen"
+        [matTooltip]="collapsed ? (nomeExibido || 'Conta') : ''"
+        matTooltipPosition="right"
+      >
+        <div class="avatar">{{ iniciais }}</div>
+        <div class="profile-info" *ngIf="!collapsed">
+          <span class="profile-name">{{ nomeExibido }}</span>
+          <span class="profile-role">{{ contatoExibido }}</span>
+        </div>
+        <mat-icon class="chevron" *ngIf="!collapsed">expand_less</mat-icon>
+      </button>
+    </div>
+  </ng-container>
 </aside>

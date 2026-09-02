@@ -9,6 +9,22 @@ export interface NavItem {
   route: string;
 }
 
+export type SidebarModo = 'interno' | 'cliente';
+
+export type SidebarProjetoStatus = 'pendente' | 'aprovado' | 'ajustes';
+
+export interface SidebarProjeto {
+  nome: string;
+  versao: string;
+  statusLabel: string;
+  statusTipo: SidebarProjetoStatus;
+}
+
+export interface SidebarUsuario {
+  nome: string;
+  email: string;
+}
+
 @Component({
   selector: 'app-sidebar',
   standalone: false,
@@ -17,6 +33,10 @@ export interface NavItem {
 })
 export class SidebarComponent implements OnInit {
   @Input() collapsed = false;
+  @Input() modo: SidebarModo = 'interno';
+  @Input() empresa: string | null = null;
+  @Input() projeto: SidebarProjeto | null = null;
+  @Input() usuario: SidebarUsuario | null = null;
   @Output() toggleSidebar = new EventEmitter<void>();
 
   navItems: NavItem[] = [
@@ -38,9 +58,40 @@ export class SidebarComponent implements OnInit {
     this.authService.getCurrentUser().subscribe(user => this.user = user);
   }
 
+  get isCliente(): boolean {
+    return this.modo === 'cliente';
+  }
+
+  get logoSubtitulo(): string {
+    return this.isCliente ? 'Portal do Cliente' : 'Gestão de Edição';
+  }
+
+  get nomeExibido(): string {
+    return this.usuario?.nome ?? this.user?.nome ?? '';
+  }
+
+  get contatoExibido(): string {
+    return this.isCliente
+      ? (this.usuario?.email ?? this.user?.email ?? '')
+      : (this.user?.cargo ?? '');
+  }
+
+  get minhaContaRoute(): string {
+    return this.isCliente ? '/portal/minha-conta' : '/minha-conta';
+  }
+
+  get statusIcon(): string {
+    switch (this.projeto?.statusTipo) {
+      case 'aprovado': return 'check_circle';
+      case 'ajustes': return 'cancel';
+      default: return 'schedule';
+    }
+  }
+
   get iniciais(): string {
-    if (!this.user?.nome) return '';
-    return this.user.nome
+    const nome = this.nomeExibido;
+    if (!nome) return '';
+    return nome
       .trim()
       .split(/\s+/)
       .slice(0, 2)
@@ -59,7 +110,7 @@ export class SidebarComponent implements OnInit {
 
   irParaMinhaConta(): void {
     this.menuOpen = false;
-    this.router.navigate(['/minha-conta']);
+    this.router.navigate([this.minhaContaRoute]);
   }
 
   sair(): void {
