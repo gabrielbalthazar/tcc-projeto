@@ -1,9 +1,16 @@
-<aside class="sidebar" [class.collapsed]="collapsed" [class.cliente]="isCliente">
-  <div class="brand" (click)="toggleSidebar.emit()">
+<aside
+  class="sidebar"
+  [class.collapsed]="effectiveCollapsed"
+  [class.cliente]="isCliente"
+  [class.floating]="!isCliente"
+  (mouseenter)="hovering = true"
+  (mouseleave)="hovering = false"
+>
+  <div class="brand" (click)="onBrandClick()">
     <div class="logo-icon">
       <mat-icon>play_circle</mat-icon>
     </div>
-    <div class="logo-text" *ngIf="!collapsed">
+    <div class="logo-text" *ngIf="!effectiveCollapsed">
       <span class="logo-name">TakeHub</span>
       <span class="logo-sub">{{ logoSubtitulo }}</span>
     </div>
@@ -11,7 +18,7 @@
 
   <!-- Modo cliente: perfil no topo + contexto do projeto -->
   <ng-container *ngIf="isCliente">
-    <div class="profile top" [class.open]="menuOpen" [class.collapsed]="collapsed">
+    <div class="profile top" [class.open]="menuOpen" [class.collapsed]="effectiveCollapsed">
       <div class="profile-menu" role="menu">
         <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
           <mat-icon>account_circle</mat-icon>
@@ -27,19 +34,19 @@
         class="profile-trigger"
         type="button"
         (click)="menuOpen = !menuOpen"
-        [matTooltip]="collapsed ? nomeExibido : ''"
+        [matTooltip]="effectiveCollapsed ? nomeExibido : ''"
         matTooltipPosition="right"
       >
         <div class="avatar">{{ iniciais }}</div>
-        <div class="profile-info" *ngIf="!collapsed">
+        <div class="profile-info" *ngIf="!effectiveCollapsed">
           <span class="profile-name">{{ nomeExibido }}</span>
           <span class="profile-role">{{ contatoExibido }}</span>
         </div>
-        <mat-icon class="chevron" *ngIf="!collapsed">expand_more</mat-icon>
+        <mat-icon class="chevron" *ngIf="!effectiveCollapsed">expand_more</mat-icon>
       </button>
     </div>
 
-    <div class="client-context" *ngIf="!collapsed">
+    <div class="client-context" *ngIf="!effectiveCollapsed">
       <div class="context-block" *ngIf="empresa">
         <span class="context-label">Empresa</span>
         <span class="context-value">{{ empresa }}</span>
@@ -64,11 +71,11 @@
       class="sair-link"
       type="button"
       (click)="sair()"
-      [matTooltip]="collapsed ? 'Sair' : ''"
+      [matTooltip]="effectiveCollapsed ? 'Sair' : ''"
       matTooltipPosition="right"
     >
       <mat-icon>logout</mat-icon>
-      <span *ngIf="!collapsed">Sair</span>
+      <span *ngIf="!effectiveCollapsed">Sair</span>
     </button>
   </ng-container>
 
@@ -80,15 +87,15 @@
         class="nav-item"
         [class.active]="isActive(item.route)"
         (click)="navigate(item.route)"
-        [matTooltip]="collapsed ? item.label : ''"
+        [matTooltip]="effectiveCollapsed ? item.label : ''"
         matTooltipPosition="right"
       >
         <mat-icon>{{ item.icon }}</mat-icon>
-        <span *ngIf="!collapsed">{{ item.label }}</span>
+        <span *ngIf="!effectiveCollapsed">{{ item.label }}</span>
       </button>
     </nav>
 
-    <div class="profile" [class.open]="menuOpen" [class.collapsed]="collapsed">
+    <div class="profile" [class.open]="menuOpen" [class.collapsed]="effectiveCollapsed">
       <div class="profile-menu" role="menu">
         <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
           <mat-icon>account_circle</mat-icon>
@@ -104,15 +111,15 @@
         class="profile-trigger"
         type="button"
         (click)="menuOpen = !menuOpen"
-        [matTooltip]="collapsed ? (nomeExibido || 'Conta') : ''"
+        [matTooltip]="effectiveCollapsed ? (nomeExibido || 'Conta') : ''"
         matTooltipPosition="right"
       >
         <div class="avatar">{{ iniciais }}</div>
-        <div class="profile-info" *ngIf="!collapsed">
+        <div class="profile-info" *ngIf="!effectiveCollapsed">
           <span class="profile-name">{{ nomeExibido }}</span>
           <span class="profile-role">{{ contatoExibido }}</span>
         </div>
-        <mat-icon class="chevron" *ngIf="!collapsed">expand_less</mat-icon>
+        <mat-icon class="chevron" *ngIf="!effectiveCollapsed">expand_less</mat-icon>
       </button>
     </div>
   </ng-container>

@@ -20,6 +20,18 @@
   &.cliente:not(.collapsed) {
     width: 232px;
   }
+
+  &.floating {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    transition: width 0.2s ease, box-shadow 0.2s ease;
+
+    &:not(.collapsed) {
+      box-shadow: 4px 0 32px rgba(0, 0, 0, 0.35);
+    }
+  }
 }
 
 .brand {

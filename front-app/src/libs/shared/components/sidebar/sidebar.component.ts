@@ -48,6 +48,8 @@ export class SidebarComponent implements OnInit {
 
   user: User | null = null;
   menuOpen = false;
+  hovering = false;
+  pinned = false;
 
   constructor(
     private router: Router,
@@ -60,6 +62,18 @@ export class SidebarComponent implements OnInit {
 
   get isCliente(): boolean {
     return this.modo === 'cliente';
+  }
+
+  get effectiveCollapsed(): boolean {
+    return this.isCliente ? this.collapsed : !(this.hovering || this.pinned);
+  }
+
+  onBrandClick(): void {
+    if (this.isCliente) {
+      this.toggleSidebar.emit();
+    } else {
+      this.pinned = !this.pinned;
+    }
   }
 
   get logoSubtitulo(): string {
