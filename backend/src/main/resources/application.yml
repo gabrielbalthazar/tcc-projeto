@@ -1,0 +1,26 @@
+server:
+  port: 3000
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: backend
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:takehub}
+    username: ${DB_USER:takehub}
+    password: ${DB_PASSWORD:takehub}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+takehub:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}
+  jwt:
+    secret: ${JWT_SECRET:takehub-tcc-dev-secret-troque-em-producao-0123456789}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:120}
