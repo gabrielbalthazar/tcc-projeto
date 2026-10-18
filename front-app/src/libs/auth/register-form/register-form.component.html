@@ -45,6 +45,8 @@
       [maxlength]="12">
     </app-input-field>
 
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
     <button
     mat-flat-button
     type="submit"

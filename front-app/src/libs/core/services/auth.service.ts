@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import {
   LoginPayload,
@@ -15,68 +16,52 @@ export class AuthService {
 
   private readonly API = 'http://localhost:3000/api/auth';
   private readonly TOKEN_KEY = 'takehub_token';
+  private readonly isBrowser: boolean;
 
-  private readonly currentUser$ = new BehaviorSubject<User>(this.getMockUser());
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    @Inject(PLATFORM_ID) platformId: object,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   login(payload: LoginPayload): Observable<AuthResponse> {
-    // return this.http.post<AuthResponse>(`${this.API}/login`, payload).pipe(
-    //   tap(res => this.saveToken(res.token))
-    // );
-    console.log('login chamado', payload);
-    return of({ token: 'mock-token', user: { id: '1', nome: 'Ana Silva', email: payload.email, tipo: 'editor', criadoEm: new Date() } } as AuthResponse);
+    return this.http.post<AuthResponse>(`${this.API}/login`, payload).pipe(
+      tap(res => this.saveToken(res.token))
+    );
   }
 
   register(payload: RegisterPayload): Observable<AuthResponse> {
-    // return this.http.post<AuthResponse>(`${this.API}/register`, payload).pipe(
-    //   tap(res => this.saveToken(res.token))
-    // );
-    console.log('register chamado', payload);
-    return of({ token: 'mock-token', user: { id: '2', nome: payload.nome, email: payload.email, tipo: payload.tipo, criadoEm: new Date() } } as AuthResponse);
+    return this.http.post<AuthResponse>(`${this.API}/register`, payload).pipe(
+      tap(res => this.saveToken(res.token))
+    );
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    if (this.isBrowser) {
+      localStorage.removeItem(this.TOKEN_KEY);
+    }
   }
 
   getCurrentUser(): Observable<User> {
-    // return this.http.get<User>(`${this.API}/me`);
-    return this.currentUser$.asObservable();
+    return this.http.get<User>(`${this.API}/me`);
   }
 
   updateCurrentUser(dados: UpdateUserPayload): Observable<User> {
-    // return this.http.put<User>(`${this.API}/me`, dados).pipe(
-    //   tap(user => this.currentUser$.next(user))
-    // );
-    const atualizado: User = {
-      ...this.currentUser$.value,
-      nome: dados.nome,
-      email: dados.email,
-      telefone: dados.telefone,
-      cargo: dados.cargo,
-    };
-    this.currentUser$.next(atualizado);
-    return of(atualizado);
+    return this.http.put<User>(`${this.API}/me`, dados);
   }
 
   isAuthenticated(): boolean {
-    return !!localStorage.getItem(this.TOKEN_KEY);
+    return !!this.getToken();
+  }
+
+  getToken(): string | null {
+    return this.isBrowser ? localStorage.getItem(this.TOKEN_KEY) : null;
   }
 
   private saveToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
-  }
-
-  private getMockUser(): User {
-    return {
-      id: '1',
-      nome: 'Ana Silva',
-      email: 'ana.silva@takehub.com',
-      tipo: 'editor',
-      cargo: 'Editora Sênior',
-      telefone: '+55 11 98888-1234',
-      criadoEm: new Date('2025-01-15'),
-    };
+    if (this.isBrowser) {
+      localStorage.setItem(this.TOKEN_KEY, token);
+    }
   }
 }

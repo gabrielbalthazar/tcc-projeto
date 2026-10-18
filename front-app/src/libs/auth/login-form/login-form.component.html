@@ -30,6 +30,8 @@
       <a class="forgot" href="#">Esqueceu a senha?</a>
     </div>
 
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+
     <button
     mat-flat-button type="submit"
     [disabled]="loading"

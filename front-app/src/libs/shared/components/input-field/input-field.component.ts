@@ -1,8 +1,8 @@
 import {
-  Component, Input, OnInit, forwardRef
+  Component, Input, OnInit, Optional, Self
 } from '@angular/core';
 import {
-  ControlValueAccessor, ValidationErrors, NG_VALUE_ACCESSOR
+  ControlValueAccessor, NgControl, ValidationErrors
 } from '@angular/forms';
 
 export type InputType = 'text' | 'email' | 'password' | 'textarea' | 'date';
@@ -12,13 +12,6 @@ export type InputType = 'text' | 'email' | 'password' | 'textarea' | 'date';
   standalone: false,
   templateUrl: './input-field.component.html',
   styleUrls: ['./input-field.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputFieldComponent),
-      multi: true
-    }
-  ]
 })
 export class InputFieldComponent implements ControlValueAccessor, OnInit {
 
@@ -44,6 +37,12 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   private onChange: (v: string) => void = () => { };
   private onTouched: () => void = () => { };
 
+  constructor(@Optional() @Self() private ngControl?: NgControl) {
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
   ngOnInit(): void {
     if (!this.errorMin && this.minLength) {
       this.errorMin = `Mínimo de ${this.minLength} caracteres.`;
@@ -54,7 +53,16 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   }
 
   get errors(): ValidationErrors | null {
-    return null;
+    const control = this.ngControl?.control;
+    const result = (!control || !(control.touched || control.dirty)) ? null : control.errors;
+    console.log('[DEBUG]', this.label, {
+      hasNgControl: !!this.ngControl,
+      touched: control?.touched,
+      dirty: control?.dirty,
+      rawErrors: control?.errors,
+      result,
+    });
+    return result;
   }
 
   get currentLength(): number {
