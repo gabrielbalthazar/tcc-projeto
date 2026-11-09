@@ -14,14 +14,14 @@ export interface ProjetoProgresso {
   cliente: string;
   status: ProjetoStatus;
   progresso: number;
-  prazo: Date;
+  prazo: string;
 }
 
 export interface PrazoProximo {
   id: string;
   nome: string;
   cliente: string;
-  prazo: Date;
+  prazo: string;
   diasRestantes: number;
 }
 

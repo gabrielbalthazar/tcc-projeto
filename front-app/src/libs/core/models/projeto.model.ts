@@ -3,7 +3,7 @@ import type { ProjetoStatus } from './dashboard.model';
 export interface ProjetoFeedback {
   autor: string;
   versao: string;
-  data: Date;
+  data: string;
   mensagem: string;
   rejeicoes?: number;
 }
@@ -16,7 +16,7 @@ export interface Projeto {
   editor: string;
   status: ProjetoStatus;
   progresso: number;
-  prazo: Date;
+  prazo: string;
   feedback?: ProjetoFeedback;
 }
 
@@ -26,6 +26,11 @@ export interface CreateProjetoPayload {
   editor: string;
   prazo: string;
   descricao: string;
+}
+
+export interface UpdateProjetoPayload extends CreateProjetoPayload {
+  status: ProjetoStatus;
+  progresso: number;
 }
 
 export type { ProjetoStatus };

@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { API_URL } from '../api.config';
 import {
   LoginPayload,
   RegisterPayload,
@@ -14,7 +15,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
-  private readonly API = 'http://localhost:3000/api/auth';
+  private readonly API = `${API_URL}/auth`;
   private readonly TOKEN_KEY = 'takehub_token';
   private readonly isBrowser: boolean;
 

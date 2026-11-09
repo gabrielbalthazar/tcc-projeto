@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { API_URL } from '../../core/api.config';
 import {
   AvaliacaoPayload,
   MaterialAprovacao,
@@ -9,7 +10,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AprovacaoService {
 
-  private readonly API = 'http://localhost:8080/api/aprovacao';
+  private readonly API = `${API_URL}/aprovacao`;
   private readonly material$ = new BehaviorSubject<MaterialAprovacao>(this.getMockData());
 
   constructor(

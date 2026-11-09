@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { API_URL } from '../../core/api.config';
 import { TimelineProjeto } from '../../core/models/timeline.model';
 
 @Injectable({ providedIn: 'root' })
 export class TimelineService {
 
-  private readonly API = 'http://localhost:8080/api/timeline';
+  private readonly API = `${API_URL}/timeline`;
   private timeline: TimelineProjeto[] = this.getMockData();
 
   constructor(

@@ -3,6 +3,7 @@ package com.takehub.backend.projeto;
 import com.takehub.backend.common.exception.ApiException;
 import com.takehub.backend.projeto.dto.CreateProjetoRequest;
 import com.takehub.backend.projeto.dto.ProjetoResponse;
+import com.takehub.backend.projeto.dto.UpdateProjetoRequest;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,10 @@ public class ProjetoService {
                 .toList();
     }
 
+    public ProjetoResponse getProjeto(UUID id) {
+        return ProjetoResponse.from(findOrThrow(id));
+    }
+
     public ProjetoResponse createProjeto(CreateProjetoRequest request) {
         Projeto projeto = new Projeto();
         projeto.setNome(request.nome());
@@ -35,6 +40,24 @@ public class ProjetoService {
 
         projetoRepository.save(projeto);
         return ProjetoResponse.from(projeto);
+    }
+
+    public ProjetoResponse updateProjeto(UUID id, UpdateProjetoRequest request) {
+        Projeto projeto = findOrThrow(id);
+        projeto.setNome(request.nome());
+        projeto.setDescricao(request.descricao());
+        projeto.setCliente(request.cliente());
+        projeto.setEditor(request.editor());
+        projeto.setPrazo(request.prazo());
+        projeto.setStatus(request.status());
+        projeto.setProgresso(request.progresso());
+
+        projetoRepository.save(projeto);
+        return ProjetoResponse.from(projeto);
+    }
+
+    public void deleteProjeto(UUID id) {
+        projetoRepository.delete(findOrThrow(id));
     }
 
     public ProjetoResponse enviarAoCliente(UUID id) {

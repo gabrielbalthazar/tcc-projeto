@@ -36,6 +36,7 @@ public class DashboardService {
 
     public List<PrazoProximo> getPrazos() {
         return projetoRepository.findAll().stream()
+                .filter(p -> p.getStatus() != ProjetoStatus.APROVADO && p.getStatus() != ProjetoStatus.CANCELADO)
                 .sorted(Comparator.comparing(Projeto::getPrazo))
                 .map(PrazoProximo::from)
                 .toList();
