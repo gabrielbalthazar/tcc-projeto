@@ -41,8 +41,11 @@
       label="Senha"
       type="password"
       prefixIcon="lock_outline"
-      [minlength]="6"
-      [maxlength]="12">
+      [minLength]="6"
+      [maxLength]="12"
+      hint="A senha deve ter entre 6 e 12 caracteres."
+      errorMin="A senha deve ter no mínimo 6 caracteres."
+      errorMax="A senha deve ter no máximo 12 caracteres.">
     </app-input-field>
 
     <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>

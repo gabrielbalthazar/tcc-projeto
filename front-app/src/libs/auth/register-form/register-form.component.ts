@@ -32,7 +32,7 @@ export class RegisterFormComponent {
     this.form = this.fb.group({
       nome: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      senha: ['', [Validators.required, Validators.minLength(6)]],
+      senha: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(12)]],
       tipo: ['editor'],
     });
   }

@@ -4,6 +4,7 @@ import {
 import {
   ControlValueAccessor, NgControl, ValidationErrors
 } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 export type InputType = 'text' | 'email' | 'password' | 'textarea' | 'date';
 
@@ -31,6 +32,12 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() errorPattern = 'Formato inválido.';
 
   showPassword = false;
+
+  // O matInput interno não tem FormControl próprio; usa o estado do controle externo
+  // para que o mat-form-field fique vermelho e exiba os <mat-error>.
+  errorStateMatcher: ErrorStateMatcher = {
+    isErrorState: () => !!this.errors,
+  };
   value = '';
   disabled = false;
 
@@ -55,13 +62,6 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   get errors(): ValidationErrors | null {
     const control = this.ngControl?.control;
     const result = (!control || !(control.touched || control.dirty)) ? null : control.errors;
-    console.log('[DEBUG]', this.label, {
-      hasNgControl: !!this.ngControl,
-      touched: control?.touched,
-      dirty: control?.dirty,
-      rawErrors: control?.errors,
-      result,
-    });
     return result;
   }
 
@@ -85,20 +85,19 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
     this.onTouched();
   }
 
-  //proximos 4: entendendo o estado do input
-  writeValue(val: string): void { //enquanto escreve
+  writeValue(val: string): void {
     this.value = val ?? '';
   }
 
-  registerOnChange(fn: any): void { //enquanto registra
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
-  registerOnTouched(fn: any): void { //quando é clicado
+  registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
-  setDisabledState(d: boolean): void { //quando é "desclicado"
+  setDisabledState(d: boolean): void {
     this.disabled = d;
   }
 }
