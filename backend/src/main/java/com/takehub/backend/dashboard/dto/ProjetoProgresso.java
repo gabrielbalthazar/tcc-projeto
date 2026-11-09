@@ -16,7 +16,7 @@ public record ProjetoProgresso(
         return new ProjetoProgresso(
                 projeto.getId().toString(),
                 projeto.getNome(),
-                projeto.getCliente(),
+                projeto.getCliente().getNome(),
                 projeto.getStatus(),
                 projeto.getProgresso(),
                 projeto.getPrazo()

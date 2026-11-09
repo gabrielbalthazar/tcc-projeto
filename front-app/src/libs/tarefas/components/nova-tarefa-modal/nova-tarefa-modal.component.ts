@@ -1,12 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { CreateTarefaPayload, TarefaPrioridade, TarefaStatus } from '../../../core/models/tarefa.model';
-
-export interface NovaTarefaModalData {
-  projetos: string[];
-  responsaveis: string[];
-}
+import { Projeto } from '../../../core/models/projeto.model';
+import { UsuarioResumo } from '../../../core/models/usuario.model';
+import { UsuariosService } from '../../../core/services/usuarios.service';
+import { ProjetosService } from '../../../projetos/services/projetos.service';
 
 @Component({
   selector: 'app-nova-tarefa-modal',
@@ -14,9 +13,12 @@ export interface NovaTarefaModalData {
   templateUrl: './nova-tarefa-modal.component.html',
   styleUrls: ['./nova-tarefa-modal.component.scss'],
 })
-export class NovaTarefaModalComponent {
+export class NovaTarefaModalComponent implements OnInit {
   form!: FormGroup;
   loading = false;
+
+  projetos: Projeto[] = [];
+  responsaveis: UsuarioResumo[] = [];
 
   readonly prioridades: { label: string; value: TarefaPrioridade }[] = [
     { label: 'Baixa', value: 'baixa' },
@@ -34,9 +36,15 @@ export class NovaTarefaModalComponent {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<NovaTarefaModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: NovaTarefaModalData,
+    private usuariosService: UsuariosService,
+    private projetosService: ProjetosService,
   ) {
     this.createForm();
+  }
+
+  ngOnInit(): void {
+    this.projetosService.getProjetos().subscribe(p => this.projetos = p);
+    this.usuariosService.getUsuarios('editor').subscribe(r => this.responsaveis = r);
   }
 
   createForm(): void {
@@ -44,15 +52,15 @@ export class NovaTarefaModalComponent {
       titulo: ['', Validators.required],
       descricao: [''],
       prioridade: ['media', Validators.required],
-      responsavel: ['', Validators.required],
-      projeto: ['', Validators.required],
+      responsavelId: ['', Validators.required],
+      projetoId: ['', Validators.required],
       status: ['pendente', Validators.required],
     });
   }
 
   get titulo() { return this.form.get('titulo')!; }
-  get responsavel() { return this.form.get('responsavel')!; }
-  get projeto() { return this.form.get('projeto')!; }
+  get responsavelId() { return this.form.get('responsavelId')!; }
+  get projetoId() { return this.form.get('projetoId')!; }
 
   close(): void {
     this.dialogRef.close();

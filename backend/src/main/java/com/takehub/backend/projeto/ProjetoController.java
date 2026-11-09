@@ -1,5 +1,6 @@
 package com.takehub.backend.projeto;
 
+import com.takehub.backend.auth.User;
 import com.takehub.backend.projeto.dto.CreateProjetoRequest;
 import com.takehub.backend.projeto.dto.ProjetoResponse;
 import com.takehub.backend.projeto.dto.UpdateProjetoRequest;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,13 +30,16 @@ public class ProjetoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjetoResponse>> getProjetos() {
-        return ResponseEntity.ok(projetoService.getProjetos());
+    public ResponseEntity<List<ProjetoResponse>> getProjetos(@AuthenticationPrincipal User usuario) {
+        return ResponseEntity.ok(projetoService.getProjetos(usuario));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjetoResponse> getProjeto(@PathVariable UUID id) {
-        return ResponseEntity.ok(projetoService.getProjeto(id));
+    public ResponseEntity<ProjetoResponse> getProjeto(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal User usuario
+    ) {
+        return ResponseEntity.ok(projetoService.getProjeto(id, usuario));
     }
 
     @PostMapping

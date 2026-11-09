@@ -12,7 +12,9 @@ export interface Projeto {
   id: string;
   nome: string;
   descricao: string;
+  clienteId: string;
   cliente: string;
+  editorId: string;
   editor: string;
   status: ProjetoStatus;
   progresso: number;
@@ -22,8 +24,8 @@ export interface Projeto {
 
 export interface CreateProjetoPayload {
   nome: string;
-  cliente: string;
-  editor: string;
+  clienteId: string;
+  editorId: string;
   prazo: string;
   descricao: string;
 }

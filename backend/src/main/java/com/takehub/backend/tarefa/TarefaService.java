@@ -1,9 +1,12 @@
 package com.takehub.backend.tarefa;
 
+import com.takehub.backend.auth.UserRole;
 import com.takehub.backend.common.exception.ApiException;
+import com.takehub.backend.projeto.ProjetoService;
 import com.takehub.backend.tarefa.dto.CreateTarefaRequest;
 import com.takehub.backend.tarefa.dto.TarefaResponse;
 import com.takehub.backend.tarefa.dto.UpdateTarefaRequest;
+import com.takehub.backend.usuario.UsuarioService;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -13,9 +16,17 @@ import org.springframework.stereotype.Service;
 public class TarefaService {
 
     private final TarefaRepository tarefaRepository;
+    private final ProjetoService projetoService;
+    private final UsuarioService usuarioService;
 
-    public TarefaService(TarefaRepository tarefaRepository) {
+    public TarefaService(
+            TarefaRepository tarefaRepository,
+            ProjetoService projetoService,
+            UsuarioService usuarioService
+    ) {
         this.tarefaRepository = tarefaRepository;
+        this.projetoService = projetoService;
+        this.usuarioService = usuarioService;
     }
 
     public List<TarefaResponse> getTarefas() {
@@ -33,8 +44,8 @@ public class TarefaService {
         tarefa.setTitulo(request.titulo());
         tarefa.setDescricao(request.descricao());
         tarefa.setPrioridade(request.prioridade());
-        tarefa.setResponsavel(request.responsavel());
-        tarefa.setProjeto(request.projeto());
+        tarefa.setResponsavel(usuarioService.buscarComTipo(request.responsavelId(), UserRole.EDITOR, "Responsavel"));
+        tarefa.setProjeto(projetoService.findOrThrow(request.projetoId()));
         tarefa.setStatus(request.status());
 
         tarefaRepository.save(tarefa);
@@ -46,8 +57,8 @@ public class TarefaService {
         tarefa.setTitulo(request.titulo());
         tarefa.setDescricao(request.descricao());
         tarefa.setPrioridade(request.prioridade());
-        tarefa.setResponsavel(request.responsavel());
-        tarefa.setProjeto(request.projeto());
+        tarefa.setResponsavel(usuarioService.buscarComTipo(request.responsavelId(), UserRole.EDITOR, "Responsavel"));
+        tarefa.setProjeto(projetoService.findOrThrow(request.projetoId()));
         tarefa.setStatus(request.status());
 
         tarefaRepository.save(tarefa);

@@ -9,7 +9,9 @@ public record TarefaResponse(
         String titulo,
         String descricao,
         TarefaPrioridade prioridade,
+        String responsavelId,
         String responsavel,
+        String projetoId,
         String projeto,
         TarefaStatus status
 ) {
@@ -19,8 +21,10 @@ public record TarefaResponse(
                 tarefa.getTitulo(),
                 tarefa.getDescricao(),
                 tarefa.getPrioridade(),
-                tarefa.getResponsavel(),
-                tarefa.getProjeto(),
+                tarefa.getResponsavel().getId().toString(),
+                tarefa.getResponsavel().getNome(),
+                tarefa.getProjeto().getId().toString(),
+                tarefa.getProjeto().getNome(),
                 tarefa.getStatus()
         );
     }

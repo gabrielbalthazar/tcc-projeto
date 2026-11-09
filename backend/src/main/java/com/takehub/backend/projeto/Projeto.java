@@ -1,5 +1,6 @@
 package com.takehub.backend.projeto;
 
+import com.takehub.backend.auth.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -31,11 +34,13 @@ public class Projeto {
     @Column(columnDefinition = "TEXT")
     private String descricao;
 
-    @Column(nullable = false)
-    private String cliente;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private User cliente;
 
-    @Column(nullable = false)
-    private String editor;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "editor_id", nullable = false)
+    private User editor;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

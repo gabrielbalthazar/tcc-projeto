@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { ClienteLayoutComponent } from './cliente-layout/cliente-layout.component';
-import { authGuard } from '../core/guards/auth.guard';
+import { authGuard, roleGuard } from '../core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'portal',
     component: ClienteLayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard('cliente')],
     children: [
       {
         path: 'aprovacao',
@@ -30,7 +30,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
-    canActivate: [authGuard],
+    canActivate: [authGuard, roleGuard('editor')],
     children: [
       {
         path: 'dashboard',

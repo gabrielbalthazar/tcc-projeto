@@ -9,6 +9,7 @@ import {
   RegisterPayload,
   AuthResponse,
   User,
+  UserRole,
   UpdateUserPayload,
 } from '../models/user.model';
 
@@ -54,6 +55,23 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  getUserRole(): UserRole | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const tipo = JSON.parse(atob(payload))?.tipo;
+      return typeof tipo === 'string' ? (tipo.toLowerCase() as UserRole) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  getHomeRoute(): string {
+    return this.getUserRole() === 'cliente' ? '/portal' : '/dashboard';
   }
 
   getToken(): string | null {

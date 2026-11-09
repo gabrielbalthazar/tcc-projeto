@@ -6,7 +6,6 @@ import { TarefasService } from '../services/tarefas.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import { NovaTarefaModalComponent } from '../components/nova-tarefa-modal/nova-tarefa-modal.component';
 import { MudancaStatus } from '../components/tarefa-card/tarefa-card.component';
-import { ProjetosService } from '../../projetos/services/projetos.service';
 
 interface Coluna {
   status: TarefaStatus;
@@ -26,8 +25,6 @@ export class TarefasComponent implements OnInit {
 
   projetoSelecionado = 'todos';
   projetos: string[] = [];
-  /** Projetos cadastrados no backend, usados no modal de nova tarefa. */
-  nomesProjetos: string[] = [];
 
   readonly colunas: Coluna[] = [
     { status: 'pendente', label: 'Pendente', accent: '#9ca3af', tarefas: [] },
@@ -40,20 +37,12 @@ export class TarefasComponent implements OnInit {
 
   constructor(
     private tarefasService: TarefasService,
-    private projetosService: ProjetosService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
     this.carregarTarefas();
-    this.carregarNomesProjetos();
-  }
-
-  private carregarNomesProjetos(): void {
-    this.projetosService.getProjetos().subscribe({
-      next: (projetos) => this.nomesProjetos = projetos.map(p => p.nome),
-    });
   }
 
   carregarTarefas(): void {
@@ -123,10 +112,6 @@ export class TarefasComponent implements OnInit {
       width: '420px',
       autoFocus: false,
       panelClass: 'app-dialog-panel',
-      data: {
-        projetos: Array.from(new Set([...this.nomesProjetos, ...this.projetos])),
-        responsaveis: ['Ana Silva', 'Carlos Lima', 'Maria Santos'],
-      },
     });
 
     dialogRef.afterClosed().subscribe((payload: CreateTarefaPayload | undefined) => {

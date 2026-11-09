@@ -15,21 +15,24 @@
     >
     </app-input-field>
 
-    <app-input-field
-      label="Cliente"
-      placeholder="Nome do cliente"
-      formControlName="cliente"
-      errorRequired="Informe o cliente."
-    >
-    </app-input-field>
+    <div class="select-field">
+      <label>Cliente</label>
+      <select formControlName="clienteId">
+        <option value="" disabled>{{ clientes.length ? 'Selecione um cliente' : 'Nenhum cliente cadastrado' }}</option>
+        <option *ngFor="let c of clientes" [value]="c.id">{{ c.nome }} ({{ c.email }})</option>
+      </select>
+      <span class="field-error" *ngIf="clienteId.touched && clienteId.invalid">Selecione o cliente.</span>
+      <span class="field-hint" *ngIf="!clientes.length">O cliente precisa criar uma conta do tipo "Cliente" antes.</span>
+    </div>
 
-    <app-input-field
-      label="Editor Responsável"
-      placeholder="Nome do editor"
-      formControlName="editor"
-      errorRequired="Informe o editor responsável."
-    >
-    </app-input-field>
+    <div class="select-field">
+      <label>Editor Responsável</label>
+      <select formControlName="editorId">
+        <option value="" disabled>Selecione um editor</option>
+        <option *ngFor="let e of editores" [value]="e.id">{{ e.nome }}</option>
+      </select>
+      <span class="field-error" *ngIf="editorId.touched && editorId.invalid">Selecione o editor responsável.</span>
+    </div>
 
     <app-input-field
       label="Prazo"

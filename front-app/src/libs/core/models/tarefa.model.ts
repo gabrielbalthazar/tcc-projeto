@@ -7,7 +7,9 @@ export interface Tarefa {
   titulo: string;
   descricao: string;
   prioridade: TarefaPrioridade;
+  responsavelId: string;
   responsavel: string;
+  projetoId: string;
   projeto: string;
   status: TarefaStatus;
 }
@@ -16,7 +18,7 @@ export interface CreateTarefaPayload {
   titulo: string;
   descricao: string;
   prioridade: TarefaPrioridade;
-  responsavel: string;
-  projeto: string;
+  responsavelId: string;
+  projetoId: string;
   status: TarefaStatus;
 }

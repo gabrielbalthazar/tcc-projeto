@@ -16,7 +16,7 @@ public record PrazoProximo(
         return new PrazoProximo(
                 projeto.getId().toString(),
                 projeto.getNome(),
-                projeto.getCliente(),
+                projeto.getCliente().getNome(),
                 projeto.getPrazo(),
                 diasRestantes
         );
