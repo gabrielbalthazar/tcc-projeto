@@ -1,57 +1,66 @@
-<mat-form-field appearance="outline" class="field" subscriptSizing="dynamic">
-  <mat-label>{{ label }}</mat-label>
+<div class="field" [class.has-error]="hasError" [class.disabled]="disabled">
+  <label *ngIf="label" [attr.for]="inputId">{{ label }}</label>
 
-  <mat-icon matPrefix *ngIf="prefixIcon">{{ prefixIcon }}</mat-icon>
+  <div class="control" [class.textarea]="type === 'textarea'">
+    <mat-icon class="prefix" *ngIf="prefixIcon && type !== 'textarea'">{{ prefixIcon }}</mat-icon>
 
-  <textarea
-    *ngIf="type === 'textarea'"
-    matInput
-    [placeholder]="placeholder"
-    [disabled]="disabled"
-    [maxLength]="maxLength || 9999"
-    [errorStateMatcher]="errorStateMatcher"
-    [value]="value"
-    (input)="onInput($event)"
-    (blur)="onBlur()"
-    rows="4"
-  >
-  </textarea>
+    <textarea
+      *ngIf="type === 'textarea'"
+      [id]="inputId"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [attr.maxlength]="maxLength || null"
+      [attr.aria-invalid]="hasError"
+      [value]="value"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      [rows]="rows"
+    ></textarea>
 
-  <input
-    *ngIf="type !== 'textarea'"
-    matInput
-    [type]="resolvedType"
-    [placeholder]="placeholder"
-    [disabled]="disabled"
-    [maxLength]="maxLength || 9999"
-    [errorStateMatcher]="errorStateMatcher"
-    [value]="value"
-    (input)="onInput($event)"
-    (blur)="onBlur()"
-  />
+    <input
+      *ngIf="type !== 'textarea'"
+      [id]="inputId"
+      [type]="resolvedType"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [attr.maxlength]="maxLength || null"
+      [attr.aria-invalid]="hasError"
+      [value]="value"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+    />
 
-  <!--botão mostrar senha-->
-  <button
-    *ngIf="type === 'password'"
-    mat-icon-button
-    matSuffix
-    type="button"
-    (click)="showPassword = !showPassword"
-  >
-    <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-  </button>
+    <!--botão mostrar senha-->
+    <button
+      *ngIf="type === 'password'"
+      class="suffix-btn"
+      type="button"
+      [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+      (click)="showPassword = !showPassword"
+    >
+      <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </button>
+  </div>
 
-   <!--validadores-->
-  <mat-hint align="end" *ngIf="maxLength"> {{ currentLength }} / {{ maxLength }} </mat-hint>
-  <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+  <!--validadores-->
+  <ng-container *ngIf="errors as e; else semErroDeValidacao">
+    <span class="error" *ngIf="e['required']">{{ errorRequired }}</span>
+    <span class="error" *ngIf="e['email']">{{ errorEmail }}</span>
+    <span class="error" *ngIf="e['minlength']">
+      {{ errorMin || 'Mínimo de ' + e['minlength'].requiredLength + ' caracteres.' }}
+    </span>
+    <span class="error" *ngIf="e['maxlength']">
+      {{ errorMax || 'Máximo de ' + e['maxlength'].requiredLength + ' caracteres.' }}
+    </span>
+    <span class="error" *ngIf="e['pattern']">{{ errorPattern }}</span>
+  </ng-container>
 
-  <mat-error *ngIf="errors?.['required']">{{ errorRequired }}</mat-error>
-  <mat-error *ngIf="errors?.['email']">{{ errorEmail }}</mat-error>
-  <mat-error *ngIf="errors?.['minlength']">
-    {{ errorMin || 'Mínimo de ' + errors?.['minlength']?.requiredLength + ' caracteres.' }}
-  </mat-error>
-  <mat-error *ngIf="errors?.['maxlength']">
-    {{ errorMax || 'Máximo de ' + errors?.['maxlength']?.requiredLength + ' caracteres.' }}
-  </mat-error>
-  <mat-error *ngIf="errors?.['pattern']">{{ errorPattern }}</mat-error>
-</mat-form-field>
+  <ng-template #semErroDeValidacao>
+    <span class="error" *ngIf="error">{{ error }}</span>
+  </ng-template>
+
+  <div class="footer" *ngIf="hint || maxLength">
+    <span class="hint">{{ hint }}</span>
+    <span class="counter" *ngIf="maxLength">{{ currentLength }} / {{ maxLength }}</span>
+  </div>
+</div>

@@ -1,9 +1,138 @@
-.field {
-  width: 100%;
-  margin-bottom: 8px;
+:host {
+  display: block;
+  // Não herda alinhamento do container (ex.: cards de login centralizados).
+  text-align: left;
+}
 
-  input[type='date']::-webkit-calendar-picker-indicator {
-    opacity: 0.6;
-    cursor: pointer;
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+  }
+}
+
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: transparent;
+    color: #111827;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 0 12px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 1px var(--color-primary);
+    }
+
+    &:disabled {
+      color: #4b5563;
+      background: #eef0f3;
+      cursor: not-allowed;
+    }
+  }
+
+  input {
+    height: 38px;
+
+    &[type='date']::-webkit-calendar-picker-indicator {
+      opacity: 0.6;
+      cursor: pointer;
+    }
+  }
+
+  textarea {
+    min-height: 76px;
+    padding: 10px 12px;
+    resize: vertical;
+  }
+
+  .prefix {
+    position: absolute;
+    left: 12px;
+    color: #9ca3af;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+  }
+
+  &:has(.prefix) input {
+    padding-left: 38px;
+  }
+
+  &:has(.suffix-btn) input {
+    padding-right: 40px;
+  }
+}
+
+.suffix-btn {
+  position: absolute;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #eceef1;
+  }
+}
+
+.has-error .control {
+  input,
+  textarea {
+    border-color: #dc2626;
+
+    &:focus {
+      box-shadow: 0 0 0 1px #dc2626;
+    }
+  }
+}
+
+.error {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: #6b7280;
+
+  .counter {
+    margin-left: auto;
+    white-space: nowrap;
   }
 }

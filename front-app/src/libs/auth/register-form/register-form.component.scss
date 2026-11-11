@@ -62,9 +62,8 @@
    color: var(--color-primary);
  }
 
- .field {
-   width: 100%;
-   margin-bottom: 8px;
+ app-input-field {
+   margin-bottom: 16px;
  }
 
  .error-message {

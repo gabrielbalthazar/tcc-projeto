@@ -4,9 +4,10 @@ import {
 import {
   ControlValueAccessor, NgControl, ValidationErrors
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
 
-export type InputType = 'text' | 'email' | 'password' | 'textarea' | 'date';
+export type InputType = 'text' | 'email' | 'tel' | 'password' | 'textarea' | 'date';
+
+let proximoId = 0;
 
 @Component({
   selector: 'app-input-field',
@@ -24,6 +25,9 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() maxLength?: number;
   @Input() minLength?: number;
   @Input() pattern?: string;
+  @Input() rows = 3;
+  /** Erro externo (ex.: retorno do back-end), exibido quando não há erro de validação. */
+  @Input() error = '';
 
   @Input() errorRequired = 'Este campo é obrigatório.';
   @Input() errorEmail = 'Informe um e-mail válido.';
@@ -31,13 +35,8 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
   @Input() errorMax = '';
   @Input() errorPattern = 'Formato inválido.';
 
+  readonly inputId = `app-input-${proximoId++}`;
   showPassword = false;
-
-  // O matInput interno não tem FormControl próprio; usa o estado do controle externo
-  // para que o mat-form-field fique vermelho e exiba os <mat-error>.
-  errorStateMatcher: ErrorStateMatcher = {
-    isErrorState: () => !!this.errors,
-  };
   value = '';
   disabled = false;
 
@@ -63,6 +62,10 @@ export class InputFieldComponent implements ControlValueAccessor, OnInit {
     const control = this.ngControl?.control;
     const result = (!control || !(control.touched || control.dirty)) ? null : control.errors;
     return result;
+  }
+
+  get hasError(): boolean {
+    return !!this.errors || !!this.error;
   }
 
   get currentLength(): number {
