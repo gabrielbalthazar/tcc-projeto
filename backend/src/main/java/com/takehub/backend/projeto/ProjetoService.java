@@ -2,6 +2,7 @@ package com.takehub.backend.projeto;
 
 import com.takehub.backend.auth.User;
 import com.takehub.backend.auth.UserRole;
+import com.takehub.backend.cliente.ClienteRepository;
 import com.takehub.backend.common.exception.ApiException;
 import com.takehub.backend.projeto.dto.CreateProjetoRequest;
 import com.takehub.backend.projeto.dto.ProjetoResponse;
@@ -20,14 +21,17 @@ public class ProjetoService {
     private final ProjetoRepository projetoRepository;
     private final TarefaRepository tarefaRepository;
     private final UsuarioService usuarioService;
+    private final ClienteRepository clienteRepository;
 
     public ProjetoService(
             ProjetoRepository projetoRepository,
             TarefaRepository tarefaRepository,
-            UsuarioService usuarioService) {
+            UsuarioService usuarioService,
+            ClienteRepository clienteRepository) {
         this.projetoRepository = projetoRepository;
         this.tarefaRepository = tarefaRepository;
         this.usuarioService = usuarioService;
+        this.clienteRepository = clienteRepository;
     }
 
     public List<ProjetoResponse> getProjetos(User usuarioLogado) {
@@ -48,12 +52,12 @@ public class ProjetoService {
         return ProjetoResponse.from(projeto);
     }
 
-    public ProjetoResponse createProjeto(CreateProjetoRequest request) {
+    public ProjetoResponse createProjeto(CreateProjetoRequest request, User editor) {
         Projeto projeto = new Projeto();
         projeto.setNome(request.nome());
         projeto.setDescricao(request.descricao());
-        projeto.setCliente(usuarioService.buscarComTipo(request.clienteId(), UserRole.CLIENTE, "Cliente"));
-        projeto.setEditor(usuarioService.buscarComTipo(request.editorId(), UserRole.EDITOR, "Editor"));
+        projeto.setCliente(buscarClienteDoEditor(request.clienteId(), editor));
+        projeto.setEditor(editor);
         projeto.setPrazo(request.prazo());
         projeto.setStatus(ProjetoStatus.RASCUNHO);
         projeto.setProgresso(0);
@@ -62,12 +66,14 @@ public class ProjetoService {
         return ProjetoResponse.from(projeto);
     }
 
-    public ProjetoResponse updateProjeto(UUID id, UpdateProjetoRequest request) {
+    /** O editor responsavel nao muda na edicao. */
+    public ProjetoResponse updateProjeto(UUID id, UpdateProjetoRequest request, User editor) {
         Projeto projeto = findOrThrow(id);
         projeto.setNome(request.nome());
         projeto.setDescricao(request.descricao());
-        projeto.setCliente(usuarioService.buscarComTipo(request.clienteId(), UserRole.CLIENTE, "Cliente"));
-        projeto.setEditor(usuarioService.buscarComTipo(request.editorId(), UserRole.EDITOR, "Editor"));
+        if (!projeto.getCliente().getId().equals(request.clienteId())) {
+            projeto.setCliente(buscarClienteDoEditor(request.clienteId(), editor));
+        }
         projeto.setPrazo(request.prazo());
         projeto.setStatus(request.status());
         projeto.setProgresso(request.progresso());
@@ -88,6 +94,15 @@ public class ProjetoService {
         projeto.setStatus(ProjetoStatus.EM_REVISAO);
         projetoRepository.save(projeto);
         return ProjetoResponse.from(projeto);
+    }
+
+    /** O cliente do projeto precisa estar na lista de clientes do editor. */
+    private User buscarClienteDoEditor(UUID clienteId, User editor) {
+        User cliente = usuarioService.buscarComTipo(clienteId, UserRole.CLIENTE, "Cliente");
+        if (!clienteRepository.existsByEditorAndUsuario(editor, cliente)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Cliente nao esta na sua lista de clientes");
+        }
+        return cliente;
     }
 
     public Projeto findOrThrow(UUID id) {

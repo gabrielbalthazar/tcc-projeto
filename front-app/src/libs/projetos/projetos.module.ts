@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SharedModule } from '../shared/shared.module';
@@ -16,6 +17,7 @@ import { NovoProjetoModalComponent } from './components/novo-projeto-modal/novo-
   ],
   imports: [
     CommonModule,
+    RouterModule,
     SharedModule,
     ProjetosRoutingModule,
     MatIconModule,

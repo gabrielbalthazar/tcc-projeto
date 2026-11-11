@@ -22,10 +22,11 @@ export interface Projeto {
   feedback?: ProjetoFeedback;
 }
 
+/** O editor responsável é sempre o editor logado (definido pelo back-end). */
 export interface CreateProjetoPayload {
   nome: string;
+  /** Id da conta do cliente (Cliente.usuarioId). */
   clienteId: string;
-  editorId: string;
   prazo: string;
   descricao: string;
 }

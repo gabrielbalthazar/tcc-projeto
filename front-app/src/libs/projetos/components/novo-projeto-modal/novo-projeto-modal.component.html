@@ -19,19 +19,12 @@
       <label>Cliente</label>
       <select formControlName="clienteId">
         <option value="" disabled>{{ clientes.length ? 'Selecione um cliente' : 'Nenhum cliente cadastrado' }}</option>
-        <option *ngFor="let c of clientes" [value]="c.id">{{ c.nome }} ({{ c.email }})</option>
+        <option *ngFor="let c of clientes" [value]="c.usuarioId">{{ c.nome }}{{ c.empresa ? ' — ' + c.empresa : '' }}</option>
       </select>
       <span class="field-error" *ngIf="clienteId.touched && clienteId.invalid">Selecione o cliente.</span>
-      <span class="field-hint" *ngIf="!clientes.length">Cadastre o cliente na tela Clientes antes de criar o projeto.</span>
-    </div>
-
-    <div class="select-field">
-      <label>Editor Responsável</label>
-      <select formControlName="editorId">
-        <option value="" disabled>Selecione um editor</option>
-        <option *ngFor="let e of editores" [value]="e.id">{{ e.nome }}</option>
-      </select>
-      <span class="field-error" *ngIf="editorId.touched && editorId.invalid">Selecione o editor responsável.</span>
+      <span class="field-hint" *ngIf="!clientes.length">
+        Cadastre o cliente na tela <a routerLink="/clientes" (click)="close()">Clientes</a> antes de criar o projeto.
+      </span>
     </div>
 
     <app-input-field

@@ -43,16 +43,20 @@ public class ProjetoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjetoResponse> createProjeto(@Valid @RequestBody CreateProjetoRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(projetoService.createProjeto(request));
+    public ResponseEntity<ProjetoResponse> createProjeto(
+            @Valid @RequestBody CreateProjetoRequest request,
+            @AuthenticationPrincipal User editor
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(projetoService.createProjeto(request, editor));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProjetoResponse> updateProjeto(
             @PathVariable UUID id,
-            @Valid @RequestBody UpdateProjetoRequest request
+            @Valid @RequestBody UpdateProjetoRequest request,
+            @AuthenticationPrincipal User editor
     ) {
-        return ResponseEntity.ok(projetoService.updateProjeto(id, request));
+        return ResponseEntity.ok(projetoService.updateProjeto(id, request, editor));
     }
 
     @DeleteMapping("/{id}")

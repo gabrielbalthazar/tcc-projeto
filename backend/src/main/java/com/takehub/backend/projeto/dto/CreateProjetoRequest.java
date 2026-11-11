@@ -8,7 +8,6 @@ import java.util.UUID;
 public record CreateProjetoRequest(
         @NotBlank String nome,
         @NotNull UUID clienteId,
-        @NotNull UUID editorId,
         @NotNull LocalDate prazo,
         String descricao
 ) {
