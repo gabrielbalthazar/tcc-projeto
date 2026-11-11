@@ -14,11 +14,11 @@ export interface Tarefa {
   status: TarefaStatus;
 }
 
+/** O responsável é sempre o editor logado (definido pelo back-end). */
 export interface CreateTarefaPayload {
   titulo: string;
   descricao: string;
   prioridade: TarefaPrioridade;
-  responsavelId: string;
   projetoId: string;
   status: TarefaStatus;
 }

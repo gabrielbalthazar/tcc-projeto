@@ -37,18 +37,19 @@ public class ProjetoService {
     public List<ProjetoResponse> getProjetos(User usuarioLogado) {
         List<Projeto> projetos = usuarioLogado.getTipo() == UserRole.CLIENTE
                 ? projetoRepository.findByClienteOrderByPrazoAsc(usuarioLogado)
-                : projetoRepository.findAllByOrderByPrazoAsc();
+                : projetoRepository.findByEditorOrderByPrazoAsc(usuarioLogado);
 
         return projetos.stream().map(ProjetoResponse::from).toList();
     }
 
     public ProjetoResponse getProjeto(UUID id, User usuarioLogado) {
-        Projeto projeto = findOrThrow(id);
-
-        if (usuarioLogado.getTipo() == UserRole.CLIENTE
-                && !projeto.getCliente().getId().equals(usuarioLogado.getId())) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "Projeto nao encontrado");
+        if (usuarioLogado.getTipo() == UserRole.EDITOR) {
+            return ProjetoResponse.from(findDoEditor(id, usuarioLogado));
         }
+
+        Projeto projeto = projetoRepository.findById(id)
+                .filter(p -> p.getCliente().getId().equals(usuarioLogado.getId()))
+                .orElseThrow(ProjetoService::naoEncontrado);
         return ProjetoResponse.from(projeto);
     }
 
@@ -68,7 +69,7 @@ public class ProjetoService {
 
     /** O editor responsavel nao muda na edicao. */
     public ProjetoResponse updateProjeto(UUID id, UpdateProjetoRequest request, User editor) {
-        Projeto projeto = findOrThrow(id);
+        Projeto projeto = findDoEditor(id, editor);
         projeto.setNome(request.nome());
         projeto.setDescricao(request.descricao());
         if (!projeto.getCliente().getId().equals(request.clienteId())) {
@@ -83,14 +84,14 @@ public class ProjetoService {
     }
 
     @Transactional
-    public void deleteProjeto(UUID id) {
-        Projeto projeto = findOrThrow(id);
+    public void deleteProjeto(UUID id, User editor) {
+        Projeto projeto = findDoEditor(id, editor);
         tarefaRepository.deleteByProjeto(projeto);
         projetoRepository.delete(projeto);
     }
 
-    public ProjetoResponse enviarAoCliente(UUID id) {
-        Projeto projeto = findOrThrow(id);
+    public ProjetoResponse enviarAoCliente(UUID id, User editor) {
+        Projeto projeto = findDoEditor(id, editor);
         projeto.setStatus(ProjetoStatus.EM_REVISAO);
         projetoRepository.save(projeto);
         return ProjetoResponse.from(projeto);
@@ -105,8 +106,16 @@ public class ProjetoService {
         return cliente;
     }
 
-    public Projeto findOrThrow(UUID id) {
-        return projetoRepository.findById(id)
-                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "Projeto nao encontrado"));
+    /**
+     * Busca um projeto do editor. Projetos de outros editores respondem 404,
+     * para nao revelar que existem.
+     */
+    public Projeto findDoEditor(UUID id, User editor) {
+        return projetoRepository.findByIdAndEditor(id, editor)
+                .orElseThrow(ProjetoService::naoEncontrado);
+    }
+
+    private static ApiException naoEncontrado() {
+        return new ApiException(HttpStatus.NOT_FOUND, "Projeto nao encontrado");
     }
 }

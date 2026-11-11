@@ -10,7 +10,6 @@ public record CreateTarefaRequest(
                 @NotBlank String titulo,
                 String descricao,
                 @NotNull TarefaPrioridade prioridade,
-                @NotNull UUID responsavelId,
                 @NotNull UUID projetoId,
                 @NotNull TarefaStatus status) {
 }

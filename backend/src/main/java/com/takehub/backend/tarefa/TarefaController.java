@@ -4,11 +4,13 @@ import com.takehub.backend.tarefa.dto.CreateTarefaRequest;
 import com.takehub.backend.tarefa.dto.TarefaResponse;
 import com.takehub.backend.tarefa.dto.UpdateTarefaRequest;
 import com.takehub.backend.tarefa.dto.UpdateTarefaStatusRequest;
+import com.takehub.backend.auth.User;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,39 +32,44 @@ public class TarefaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TarefaResponse>> getTarefas() {
-        return ResponseEntity.ok(tarefaService.getTarefas());
+    public ResponseEntity<List<TarefaResponse>> getTarefas(@AuthenticationPrincipal User editor) {
+        return ResponseEntity.ok(tarefaService.getTarefas(editor));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TarefaResponse> getTarefa(@PathVariable UUID id) {
-        return ResponseEntity.ok(tarefaService.getTarefa(id));
+    public ResponseEntity<TarefaResponse> getTarefa(@PathVariable UUID id, @AuthenticationPrincipal User editor) {
+        return ResponseEntity.ok(tarefaService.getTarefa(id, editor));
     }
 
     @PostMapping
-    public ResponseEntity<TarefaResponse> createTarefa(@Valid @RequestBody CreateTarefaRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(tarefaService.createTarefa(request));
+    public ResponseEntity<TarefaResponse> createTarefa(
+            @Valid @RequestBody CreateTarefaRequest request,
+            @AuthenticationPrincipal User editor
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(tarefaService.createTarefa(request, editor));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TarefaResponse> updateTarefa(
             @PathVariable UUID id,
-            @Valid @RequestBody UpdateTarefaRequest request
+            @Valid @RequestBody UpdateTarefaRequest request,
+            @AuthenticationPrincipal User editor
     ) {
-        return ResponseEntity.ok(tarefaService.updateTarefa(id, request));
+        return ResponseEntity.ok(tarefaService.updateTarefa(id, request, editor));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<TarefaResponse> atualizarStatus(
             @PathVariable UUID id,
-            @Valid @RequestBody UpdateTarefaStatusRequest request
+            @Valid @RequestBody UpdateTarefaStatusRequest request,
+            @AuthenticationPrincipal User editor
     ) {
-        return ResponseEntity.ok(tarefaService.atualizarStatus(id, request.status()));
+        return ResponseEntity.ok(tarefaService.atualizarStatus(id, request.status(), editor));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTarefa(@PathVariable UUID id) {
-        tarefaService.deleteTarefa(id);
+    public ResponseEntity<Void> deleteTarefa(@PathVariable UUID id, @AuthenticationPrincipal User editor) {
+        tarefaService.deleteTarefa(id, editor);
         return ResponseEntity.noContent().build();
     }
 }

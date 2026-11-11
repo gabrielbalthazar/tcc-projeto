@@ -60,13 +60,16 @@ public class ProjetoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProjeto(@PathVariable UUID id) {
-        projetoService.deleteProjeto(id);
+    public ResponseEntity<Void> deleteProjeto(@PathVariable UUID id, @AuthenticationPrincipal User editor) {
+        projetoService.deleteProjeto(id, editor);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/enviar")
-    public ResponseEntity<ProjetoResponse> enviarAoCliente(@PathVariable UUID id) {
-        return ResponseEntity.ok(projetoService.enviarAoCliente(id));
+    public ResponseEntity<ProjetoResponse> enviarAoCliente(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal User editor
+    ) {
+        return ResponseEntity.ok(projetoService.enviarAoCliente(id, editor));
     }
 }

@@ -31,17 +31,6 @@
     </div>
 
     <div class="select-field">
-      <label>Responsável</label>
-      <select formControlName="responsavelId">
-        <option value="" disabled>Selecione um responsável</option>
-        <option *ngFor="let r of responsaveis" [value]="r.id">{{ r.nome }}</option>
-      </select>
-      <span class="field-error" *ngIf="responsavelId.touched && responsavelId.invalid">
-        Selecione o responsável.
-      </span>
-    </div>
-
-    <div class="select-field">
       <label>Projeto</label>
       <select formControlName="projetoId">
         <option value="" disabled>{{ projetos.length ? 'Selecione um projeto' : 'Nenhum projeto cadastrado' }}</option>

@@ -3,8 +3,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { CreateTarefaPayload, TarefaPrioridade, TarefaStatus } from '../../../core/models/tarefa.model';
 import { Projeto } from '../../../core/models/projeto.model';
-import { UsuarioResumo } from '../../../core/models/usuario.model';
-import { UsuariosService } from '../../../core/services/usuarios.service';
 import { ProjetosService } from '../../../projetos/services/projetos.service';
 
 @Component({
@@ -18,7 +16,6 @@ export class NovaTarefaModalComponent implements OnInit {
   loading = false;
 
   projetos: Projeto[] = [];
-  responsaveis: UsuarioResumo[] = [];
 
   readonly prioridades: { label: string; value: TarefaPrioridade }[] = [
     { label: 'Baixa', value: 'baixa' },
@@ -36,7 +33,6 @@ export class NovaTarefaModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<NovaTarefaModalComponent>,
-    private usuariosService: UsuariosService,
     private projetosService: ProjetosService,
   ) {
     this.createForm();
@@ -44,7 +40,6 @@ export class NovaTarefaModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.projetosService.getProjetos().subscribe(p => this.projetos = p);
-    this.usuariosService.getUsuarios('editor').subscribe(r => this.responsaveis = r);
   }
 
   createForm(): void {
@@ -52,14 +47,12 @@ export class NovaTarefaModalComponent implements OnInit {
       titulo: ['', Validators.required],
       descricao: [''],
       prioridade: ['media', Validators.required],
-      responsavelId: ['', Validators.required],
       projetoId: ['', Validators.required],
       status: ['pendente', Validators.required],
     });
   }
 
   get titulo() { return this.form.get('titulo')!; }
-  get responsavelId() { return this.form.get('responsavelId')!; }
   get projetoId() { return this.form.get('projetoId')!; }
 
   close(): void {
