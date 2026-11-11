@@ -26,25 +26,27 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new ApiException(HttpStatus.CONFLICT, "E-mail ja cadastrado");
-        }
+        User user = userRepository.findByEmailIgnoreCase(request.email())
+                .map(existente -> ativarClientePendente(existente, request))
+                .orElseGet(() -> {
+                    User novo = new User();
+                    novo.setEmail(request.email());
+                    novo.setTipo(request.tipo());
+                    return novo;
+                });
 
-        User user = new User();
         user.setNome(request.nome());
-        user.setEmail(request.email());
         user.setSenhaHash(passwordEncoder.encode(request.senha()));
-        user.setTipo(request.tipo());
         userRepository.save(user);
 
         return buildAuthResponse(user);
     }
 
     public AuthResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
+        User user = userRepository.findByEmailIgnoreCase(request.email())
                 .orElseThrow(() -> new BadCredentialsException("E-mail ou senha invalidos"));
 
-        if (!passwordEncoder.matches(request.senha(), user.getSenhaHash())) {
+        if (user.isCadastroPendente() || !passwordEncoder.matches(request.senha(), user.getSenhaHash())) {
             throw new BadCredentialsException("E-mail ou senha invalidos");
         }
 
@@ -67,6 +69,17 @@ public class AuthService {
         userRepository.save(user);
 
         return UserResponse.from(user);
+    }
+
+    /**
+     * Cliente cadastrado por um editor (ainda sem senha) assume a conta ao se registrar
+     * com o mesmo e-mail, herdando os projetos ja vinculados a ele.
+     */
+    private User ativarClientePendente(User existente, RegisterRequest request) {
+        if (!existente.isCadastroPendente() || request.tipo() != UserRole.CLIENTE) {
+            throw new ApiException(HttpStatus.CONFLICT, "E-mail ja cadastrado");
+        }
+        return existente;
     }
 
     private AuthResponse buildAuthResponse(User user) {

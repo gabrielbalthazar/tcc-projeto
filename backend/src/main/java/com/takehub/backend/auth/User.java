@@ -32,7 +32,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "senha_hash", nullable = false)
+    /** Nulo enquanto o cliente, cadastrado por um editor, ainda nao ativou a conta. */
+    @Column(name = "senha_hash")
     private String senhaHash;
 
     @Enumerated(EnumType.STRING)
@@ -45,6 +46,10 @@ public class User {
 
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
+
+    public boolean isCadastroPendente() {
+        return senhaHash == null;
+    }
 
     @PrePersist
     void prePersist() {

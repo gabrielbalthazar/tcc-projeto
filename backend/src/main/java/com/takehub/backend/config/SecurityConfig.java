@@ -53,7 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/projetos", "/api/projetos/*").authenticated()
-                        .requestMatchers("/api/projetos/**", "/api/tarefas/**", "/api/dashboard/**", "/api/usuarios/**")
+                        .requestMatchers("/api/projetos/**", "/api/tarefas/**", "/api/dashboard/**", "/api/usuarios/**",
+                                "/api/clientes/**")
                         .hasRole("EDITOR")
                         .anyRequest().authenticated())
                 .addFilterBefore(
