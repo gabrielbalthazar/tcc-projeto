@@ -1,0 +1,73 @@
+<div class="clientes">
+  <div class="header">
+    <div>
+      <span class="eyebrow">Área do editor</span>
+      <h1>Clientes</h1>
+    </div>
+    <button class="novo-cliente-btn" type="button" (click)="novoCliente()">
+      <mat-icon>add</mat-icon>
+      Novo cliente
+    </button>
+  </div>
+
+  <div class="contagem">
+    <mat-icon>group</mat-icon>
+    {{ clientes.length }} {{ clientes.length === 1 ? 'cliente' : 'clientes' }}
+  </div>
+
+  <div class="search-box">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      placeholder="Buscar por nome, empresa ou e-mail..."
+      [value]="busca"
+      (input)="onBusca($event)"
+    />
+  </div>
+
+  <div class="clientes-grid" *ngIf="clientesFiltrados.length; else vazio">
+    <article class="cliente-card" *ngFor="let cliente of clientesFiltrados">
+      <div class="card-top">
+        <div class="avatar">{{ iniciais(cliente.nome) }}</div>
+        <div class="identificacao">
+          <h3 class="nome">{{ cliente.nome }}</h3>
+          <span class="empresa" *ngIf="cliente.empresa">{{ cliente.empresa }}</span>
+        </div>
+        <button
+          class="editar-btn"
+          type="button"
+          (click)="editarCliente(cliente)"
+          [attr.aria-label]="'Editar ' + cliente.nome"
+          matTooltip="Editar cliente"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+
+      <div class="contato">
+        <mat-icon>mail_outline</mat-icon>
+        <span class="email">{{ cliente.email }}</span>
+      </div>
+
+      <span
+        class="badge-pendente"
+        *ngIf="cliente.cadastroPendente"
+        matTooltip="O cliente ainda não criou a senha de acesso."
+      >
+        Convite pendente
+      </span>
+
+      <div class="card-footer">
+        <mat-icon>folder_open</mat-icon>
+        {{ cliente.projetosAtivos }} {{ cliente.projetosAtivos === 1 ? 'projeto ativo' : 'projetos ativos' }}
+      </div>
+    </article>
+  </div>
+
+  <ng-template #vazio>
+    <div class="empty-state">
+      <mat-icon>person_off</mat-icon>
+      <p>{{ busca ? 'Nenhum cliente encontrado para essa busca.' : 'Nenhum cliente cadastrado ainda.' }}</p>
+    </div>
+  </ng-template>
+</div>

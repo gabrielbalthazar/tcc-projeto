@@ -1,0 +1,40 @@
+<div class="modal">
+  <div class="modal-header">
+    <h2>{{ editando ? 'Editar cliente' : 'Novo cliente' }}</h2>
+    <button class="close-btn" type="button" aria-label="Fechar" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="modal-form" (ngSubmit)="salvar()" novalidate>
+    <app-input-field
+      label="Nome completo"
+      formControlName="nome"
+      errorRequired="Informe o nome do cliente."
+    ></app-input-field>
+
+    <app-input-field label="Empresa" formControlName="empresa"></app-input-field>
+
+    <app-input-field
+      label="E-mail"
+      type="email"
+      formControlName="email"
+      errorRequired="Informe o e-mail do cliente."
+      [error]="erroEmail"
+      [hint]="emailHint"
+    ></app-input-field>
+
+    <app-input-field label="Telefone" type="tel" formControlName="telefone"></app-input-field>
+
+    <app-input-field label="Observações" type="textarea" formControlName="observacoes"></app-input-field>
+
+    <p class="erro-geral" *ngIf="erroGeral">{{ erroGeral }}</p>
+
+    <div class="actions">
+      <button class="btn-secundario" type="button" (click)="close()" [disabled]="salvando">Cancelar</button>
+      <button class="btn-primario" type="submit" [disabled]="salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar cliente' }}
+      </button>
+    </div>
+  </form>
+</div>

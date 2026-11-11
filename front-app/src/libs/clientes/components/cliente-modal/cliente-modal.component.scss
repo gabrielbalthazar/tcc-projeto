@@ -1,0 +1,102 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 24px 24px;
+  width: 100%;
+  background: #f6f7f9;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+  }
+}
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #374151;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background: #e5e7eb;
+  }
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.erro-geral {
+  font-size: 13px;
+  color: #dc2626;
+  background: #fef2f2;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 0;
+
+  button {
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.btn-secundario {
+  border: 1px solid var(--color-border);
+  background: #f6f7f9;
+  color: #111827;
+
+  &:hover:not(:disabled) {
+    background: #eceef1;
+  }
+}
+
+.btn-primario {
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+  }
+}

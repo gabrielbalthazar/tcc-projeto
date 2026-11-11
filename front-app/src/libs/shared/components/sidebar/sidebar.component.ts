@@ -42,6 +42,7 @@ export class SidebarComponent implements OnInit {
   navItems: NavItem[] = [
     { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
     { label: 'Projetos', icon: 'folder_open', route: '/projetos' },
+    { label: 'Clientes', icon: 'group', route: '/clientes' },
     { label: 'Tarefas', icon: 'format_list_bulleted', route: '/tarefas' },
     { label: 'Timeline', icon: 'timeline', route: '/timeline' },
   ];

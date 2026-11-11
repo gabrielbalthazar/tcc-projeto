@@ -22,7 +22,7 @@
         <option *ngFor="let c of clientes" [value]="c.id">{{ c.nome }} ({{ c.email }})</option>
       </select>
       <span class="field-error" *ngIf="clienteId.touched && clienteId.invalid">Selecione o cliente.</span>
-      <span class="field-hint" *ngIf="!clientes.length">O cliente precisa criar uma conta do tipo "Cliente" antes.</span>
+      <span class="field-hint" *ngIf="!clientes.length">Cadastre o cliente na tela Clientes antes de criar o projeto.</span>
     </div>
 
     <div class="select-field">
