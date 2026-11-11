@@ -12,6 +12,7 @@ import { PrimaryButtonComponent } from './components/primary-button/primary-butt
 import { InputFieldComponent } from './components/input-field/input-field.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { HeaderComponent } from './components/header/header.component';
 import { StatCardComponent } from './components/stat-card/stat-card.component';
 
 @NgModule({
@@ -20,6 +21,7 @@ import { StatCardComponent } from './components/stat-card/stat-card.component';
     InputFieldComponent,
     StatCardComponent,
     SidebarComponent,
+    HeaderComponent,
   ],
   imports: [
     CommonModule,
@@ -41,6 +43,7 @@ import { StatCardComponent } from './components/stat-card/stat-card.component';
     ReactiveFormsModule,
     StatCardComponent,
     SidebarComponent,
+    HeaderComponent,
     MatTooltipModule,
   ]
 })

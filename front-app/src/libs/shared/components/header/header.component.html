@@ -1,0 +1,51 @@
+<header class="header">
+  <button class="brand" type="button" (click)="irParaInicio()">
+    <span class="logo-icon">
+      <mat-icon>movie</mat-icon>
+    </span>
+    <span class="logo-name">TakeHub</span>
+  </button>
+
+  <nav class="nav-pill" aria-label="Navegação principal">
+    <button
+      *ngFor="let item of navItems"
+      class="nav-item"
+      type="button"
+      [class.active]="isActive(item.route)"
+      [attr.aria-current]="isActive(item.route) ? 'page' : null"
+      [attr.aria-label]="item.label"
+      (click)="navigate(item.route)"
+    >
+      <mat-icon>{{ item.icon }}</mat-icon>
+      <span class="nav-label">{{ item.label }}</span>
+    </button>
+  </nav>
+
+  <div class="profile" [class.open]="menuOpen">
+    <button
+      class="profile-trigger"
+      type="button"
+      aria-haspopup="menu"
+      [attr.aria-expanded]="menuOpen"
+      (click)="menuOpen = !menuOpen"
+    >
+      <span class="profile-info">
+        <span class="profile-name">{{ nome }}</span>
+        <span class="profile-role">{{ cargo }}</span>
+      </span>
+      <span class="avatar">{{ iniciais }}</span>
+      <mat-icon class="chevron">expand_more</mat-icon>
+    </button>
+
+    <div class="profile-menu" role="menu" *ngIf="menuOpen">
+      <button class="profile-menu-item" type="button" role="menuitem" (click)="irParaMinhaConta()">
+        <mat-icon>account_circle</mat-icon>
+        <span>Minha conta</span>
+      </button>
+      <button class="profile-menu-item danger" type="button" role="menuitem" (click)="sair()">
+        <mat-icon>logout</mat-icon>
+        <span>Sair da conta</span>
+      </button>
+    </div>
+  </div>
+</header>

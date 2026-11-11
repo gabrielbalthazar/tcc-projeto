@@ -9,6 +9,14 @@ export interface NavItem {
   route: string;
 }
 
+export const EDITOR_NAV_ITEMS: NavItem[] = [
+  { label: 'Dashboard', icon: 'grid_view', route: '/dashboard' },
+  { label: 'Projetos', icon: 'folder_open', route: '/projetos' },
+  { label: 'Tarefas', icon: 'checklist', route: '/tarefas' },
+  { label: 'Timeline', icon: 'chat_bubble_outline', route: '/timeline' },
+  { label: 'Clientes', icon: 'group', route: '/clientes' },
+];
+
 export type SidebarModo = 'interno' | 'cliente';
 
 export type SidebarProjetoStatus = 'pendente' | 'aprovado' | 'ajustes';
@@ -39,13 +47,7 @@ export class SidebarComponent implements OnInit {
   @Input() usuario: SidebarUsuario | null = null;
   @Output() toggleSidebar = new EventEmitter<void>();
 
-  navItems: NavItem[] = [
-    { label: 'Dashboard', icon: 'dashboard', route: '/dashboard' },
-    { label: 'Projetos', icon: 'folder_open', route: '/projetos' },
-    { label: 'Clientes', icon: 'group', route: '/clientes' },
-    { label: 'Tarefas', icon: 'format_list_bulleted', route: '/tarefas' },
-    { label: 'Timeline', icon: 'timeline', route: '/timeline' },
-  ];
+  readonly navItems: NavItem[] = EDITOR_NAV_ITEMS;
 
   user: User | null = null;
   menuOpen = false;
