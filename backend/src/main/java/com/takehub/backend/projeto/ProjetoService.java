@@ -36,7 +36,7 @@ public class ProjetoService {
 
     public List<ProjetoResponse> getProjetos(User usuarioLogado) {
         List<Projeto> projetos = usuarioLogado.getTipo() == UserRole.CLIENTE
-                ? projetoRepository.findByClienteOrderByPrazoAsc(usuarioLogado)
+                ? projetoRepository.findByClienteAndStatusNotOrderByPrazoAsc(usuarioLogado, ProjetoStatus.RASCUNHO)
                 : projetoRepository.findByEditorOrderByPrazoAsc(usuarioLogado);
 
         return projetos.stream().map(ProjetoResponse::from).toList();
@@ -49,6 +49,7 @@ public class ProjetoService {
 
         Projeto projeto = projetoRepository.findById(id)
                 .filter(p -> p.getCliente().getId().equals(usuarioLogado.getId()))
+                .filter(p -> p.getStatus() != ProjetoStatus.RASCUNHO)
                 .orElseThrow(ProjetoService::naoEncontrado);
         return ProjetoResponse.from(projeto);
     }
@@ -67,7 +68,6 @@ public class ProjetoService {
         return ProjetoResponse.from(projeto);
     }
 
-    /** O editor responsavel nao muda na edicao. */
     public ProjetoResponse updateProjeto(UUID id, UpdateProjetoRequest request, User editor) {
         Projeto projeto = findDoEditor(id, editor);
         projeto.setNome(request.nome());
@@ -97,7 +97,6 @@ public class ProjetoService {
         return ProjetoResponse.from(projeto);
     }
 
-    /** O cliente do projeto precisa estar na lista de clientes do editor. */
     private User buscarClienteDoEditor(UUID clienteId, User editor) {
         User cliente = usuarioService.buscarComTipo(clienteId, UserRole.CLIENTE, "Cliente");
         if (!clienteRepository.existsByEditorAndUsuario(editor, cliente)) {
@@ -106,10 +105,6 @@ public class ProjetoService {
         return cliente;
     }
 
-    /**
-     * Busca um projeto do editor. Projetos de outros editores respondem 404,
-     * para nao revelar que existem.
-     */
     public Projeto findDoEditor(UUID id, User editor) {
         return projetoRepository.findByIdAndEditor(id, editor)
                 .orElseThrow(ProjetoService::naoEncontrado);

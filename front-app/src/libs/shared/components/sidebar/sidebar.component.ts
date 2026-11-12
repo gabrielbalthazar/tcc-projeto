@@ -23,7 +23,7 @@ export type SidebarProjetoStatus = 'pendente' | 'aprovado' | 'ajustes';
 
 export interface SidebarProjeto {
   nome: string;
-  versao: string;
+  versao?: string;
   statusLabel: string;
   statusTipo: SidebarProjetoStatus;
 }
@@ -123,6 +123,10 @@ export class SidebarComponent implements OnInit {
 
   navigate(route: string): void {
     this.router.navigate([route]);
+  }
+
+  voltarParaProjetos(): void {
+    this.router.navigate(['/portal/projetos']);
   }
 
   irParaMinhaConta(): void {

@@ -12,7 +12,7 @@ public interface ProjetoRepository extends JpaRepository<Projeto, UUID> {
 
     long countByEditorAndStatus(User editor, ProjetoStatus status);
 
-    List<Projeto> findByClienteOrderByPrazoAsc(User cliente);
+    List<Projeto> findByClienteAndStatusNotOrderByPrazoAsc(User cliente, ProjetoStatus status);
 
     List<Projeto> findByEditorOrderByPrazoAsc(User editor);
 
@@ -20,7 +20,6 @@ public interface ProjetoRepository extends JpaRepository<Projeto, UUID> {
 
     long countByClienteAndEditorAndStatusNotIn(User cliente, User editor, List<ProjetoStatus> status);
 
-    /** Cada linha: [UUID clienteId, Long quantidade] de projetos do editor fora dos status informados. */
     @Query("select p.cliente.id, count(p) from Projeto p"
             + " where p.editor = :editor and p.status not in :status group by p.cliente.id")
     List<Object[]> countAtivosPorCliente(@Param("editor") User editor, @Param("status") List<ProjetoStatus> status);

@@ -1,0 +1,92 @@
+<div class="meus-projetos">
+  <div class="header">
+    <span class="eyebrow">Portal do cliente</span>
+    <h1>Meus projetos</h1>
+  </div>
+
+  <div class="contagem">
+    <mat-icon>folder_open</mat-icon>
+    {{ totalAtivos }} {{ totalAtivos === 1 ? 'projeto ativo' : 'projetos ativos' }}
+  </div>
+
+  <div class="filters-row">
+    <div class="search-box">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        placeholder="Buscar projeto..."
+        aria-label="Buscar projeto"
+        [value]="busca"
+        (input)="onBusca($event)"
+      />
+    </div>
+
+    <select class="status-select" aria-label="Filtrar por status" (change)="onFiltro($event)">
+      <option *ngFor="let f of filtros" [value]="f.value" [selected]="f.value === filtro">{{ f.label }}</option>
+    </select>
+  </div>
+
+  <div class="lista" *ngIf="projetosFiltrados.length; else vazio">
+    <article class="projeto-card" *ngFor="let projeto of projetosFiltrados">
+      <div class="card-top">
+        <div class="titulo">
+          <h3>{{ projeto.nome }}</h3>
+          <p class="descricao" *ngIf="projeto.descricao">{{ projeto.descricao }}</p>
+        </div>
+        <span class="badge" [ngClass]="info(projeto).badge">{{ info(projeto).label }}</span>
+      </div>
+
+      <div class="meta">
+        <span>
+          <mat-icon>person_outline</mat-icon>
+          {{ projeto.editor }}
+        </span>
+        <span>
+          <mat-icon>calendar_today</mat-icon>
+          Prazo: {{ formatarData(projeto.prazo) }}
+        </span>
+      </div>
+
+      <div class="progresso">
+        <div class="progresso-topo">
+          <span>Progresso</span>
+          <strong>{{ projeto.progresso }}%</strong>
+        </div>
+        <div
+          class="barra"
+          role="progressbar"
+          [attr.aria-valuenow]="projeto.progresso"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          [attr.aria-label]="'Progresso de ' + projeto.nome"
+        >
+          <div class="barra-preenchida" [style.width.%]="projeto.progresso"></div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <span class="situacao">
+          <mat-icon>{{ info(projeto).icone }}</mat-icon>
+          {{ info(projeto).mensagem }}
+        </span>
+
+        <button
+          type="button"
+          class="acao"
+          [class.primaria]="aguardandoAvaliacao(projeto)"
+          (click)="abrirProjeto(projeto)"
+        >
+          {{ aguardandoAvaliacao(projeto) ? 'Avaliar material' : 'Ver projeto' }}
+          <mat-icon>north_east</mat-icon>
+        </button>
+      </div>
+    </article>
+  </div>
+
+  <ng-template #vazio>
+    <div class="empty-state">
+      <mat-icon>folder_off</mat-icon>
+      <p>{{ projetos.length ? 'Nenhum projeto encontrado com esses filtros.' : 'Você ainda não tem projetos.' }}</p>
+    </div>
+  </ng-template>
+</div>

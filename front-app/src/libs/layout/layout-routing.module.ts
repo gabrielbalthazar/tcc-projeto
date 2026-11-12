@@ -2,28 +2,40 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { ClienteLayoutComponent } from './cliente-layout/cliente-layout.component';
+import { ClientePortalLayoutComponent } from './cliente-portal-layout/cliente-portal-layout.component';
 import { authGuard, roleGuard } from '../core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'portal',
-    component: ClienteLayoutComponent,
     canActivate: [authGuard, roleGuard('cliente')],
     children: [
       {
-        path: 'aprovacao',
+        path: 'projetos/:projetoId',
+        component: ClienteLayoutComponent,
         loadChildren: () =>
           import('../aprovacao/aprovacao.module').then(m => m.AprovacaoModule)
       },
       {
-        path: 'minha-conta',
-        loadChildren: () =>
-          import('../minha-conta/minha-conta.module').then(m => m.MinhaContaModule)
-      },
-      {
         path: '',
-        redirectTo: 'aprovacao',
-        pathMatch: 'full'
+        component: ClientePortalLayoutComponent,
+        children: [
+          {
+            path: 'projetos',
+            loadChildren: () =>
+              import('../meus-projetos/meus-projetos.module').then(m => m.MeusProjetosModule)
+          },
+          {
+            path: 'minha-conta',
+            loadChildren: () =>
+              import('../minha-conta/minha-conta.module').then(m => m.MinhaContaModule)
+          },
+          {
+            path: '',
+            redirectTo: 'projetos',
+            pathMatch: 'full'
+          }
+        ]
       }
     ]
   },

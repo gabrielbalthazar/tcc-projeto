@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models/user.model';
@@ -11,7 +11,7 @@ import { EDITOR_NAV_ITEMS, NavItem } from '../sidebar/sidebar.component';
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
-  readonly navItems: NavItem[] = EDITOR_NAV_ITEMS;
+  @Input() navItems: NavItem[] = EDITOR_NAV_ITEMS;
 
   user: User | null = null;
   menuOpen = false;
@@ -30,7 +30,12 @@ export class HeaderComponent implements OnInit {
     return this.user?.nome ?? '';
   }
 
+  get isCliente(): boolean {
+    return this.user?.tipo === 'cliente';
+  }
+
   get cargo(): string {
+    if (this.isCliente) return 'Cliente';
     return this.user?.cargo || 'Editor';
   }
 
@@ -66,12 +71,12 @@ export class HeaderComponent implements OnInit {
   }
 
   irParaInicio(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate([this.isCliente ? '/portal' : '/dashboard']);
   }
 
   irParaMinhaConta(): void {
     this.menuOpen = false;
-    this.router.navigate(['/minha-conta']);
+    this.router.navigate([this.isCliente ? '/portal/minha-conta' : '/minha-conta']);
   }
 
   sair(): void {

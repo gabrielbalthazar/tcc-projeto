@@ -6,7 +6,7 @@
     <span class="logo-name">TakeHub</span>
   </button>
 
-  <nav class="nav-pill" aria-label="Navegação principal">
+  <nav class="nav-pill" aria-label="Navegação principal" *ngIf="navItems.length">
     <button
       *ngFor="let item of navItems"
       class="nav-item"
