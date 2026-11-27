@@ -1,0 +1,96 @@
+<div class="modal">
+  <div class="modal-header">
+    <div>
+      <h2>Histórico de revisões</h2>
+      <p class="subtitulo">{{ projeto.nome }} · Cliente: {{ projeto.cliente }}</p>
+    </div>
+    <button class="close-btn" type="button" (click)="fechar()" aria-label="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="estado" *ngIf="carregando">
+    <mat-icon class="girando">autorenew</mat-icon>
+    Carregando histórico…
+  </div>
+
+  <div class="estado" *ngIf="!carregando && erro">
+    <mat-icon>error_outline</mat-icon>
+    Não foi possível carregar o histórico.
+    <button type="button" class="link-btn" (click)="carregar()">Tentar novamente</button>
+  </div>
+
+  <div class="estado vazio" *ngIf="!carregando && !erro && !versoes.length">
+    <mat-icon>forum</mat-icon>
+    <strong>Nenhuma versão enviada ainda</strong>
+    <span>Quando você enviar um vídeo ao cliente, as mensagens e respostas aparecem aqui.</span>
+  </div>
+
+  <ng-container *ngIf="!carregando && !erro && versoes.length">
+    <div class="resumo">
+      <div class="resumo-item">
+        <span class="resumo-valor">{{ versoes.length }}</span>
+        <span class="resumo-label">{{ versoes.length === 1 ? 'versão enviada' : 'versões enviadas' }}</span>
+      </div>
+      <div class="resumo-item">
+        <span class="resumo-valor ajustes">{{ totalAjustes }}</span>
+        <span class="resumo-label">{{ totalAjustes === 1 ? 'pedido de ajuste' : 'pedidos de ajuste' }}</span>
+      </div>
+      <div class="resumo-item">
+        <span class="resumo-valor" [class.aprovado]="aprovada">{{ aprovada ? 'v' + aprovada.numero : '—' }}</span>
+        <span class="resumo-label">versão aprovada</span>
+      </div>
+    </div>
+
+    <div class="tabela-wrapper">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th>Versão</th>
+            <th>Justificativa do editor</th>
+            <th>Resposta do cliente</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let versao of versoes; trackBy: trackByVersao">
+            <td class="col-versao" data-label="Versão">
+              <span class="versao-numero">v{{ versao.numero }}</span>
+              <a class="arquivo-link" [href]="versao.arquivoUrl" target="_blank" rel="noopener" [title]="versao.nomeArquivo">
+                <mat-icon>play_circle</mat-icon>
+                Assistir
+              </a>
+            </td>
+
+            <td data-label="Justificativa do editor">
+              <div class="mensagem editor">
+                <p *ngIf="versao.mensagemEditor; else semMensagemEditor">{{ versao.mensagemEditor }}</p>
+                <ng-template #semMensagemEditor><p class="sem-texto">Sem mensagem</p></ng-template>
+                <span class="mensagem-meta">{{ versao.enviadoPor }} · {{ versao.criadaEm | date: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </td>
+
+            <td data-label="Resposta do cliente">
+              <div class="mensagem cliente" *ngIf="versao.avaliadaEm; else aguardando"
+                [class.reprovada]="versao.status === 'ajustes_solicitados'">
+                <p *ngIf="versao.comentarioCliente; else semComentario">{{ versao.comentarioCliente }}</p>
+                <ng-template #semComentario><p class="sem-texto">Sem comentário</p></ng-template>
+                <span class="mensagem-meta">{{ projeto.cliente }} · {{ versao.avaliadaEm | date: 'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+              <ng-template #aguardando>
+                <span class="aguardando">Aguardando resposta do cliente…</span>
+              </ng-template>
+            </td>
+
+            <td data-label="Status">
+              <span class="status" [ngClass]="meta(versao).classe">
+                <mat-icon>{{ meta(versao).icone }}</mat-icon>
+                {{ meta(versao).label }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+</div>

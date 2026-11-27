@@ -9,7 +9,16 @@ public enum ProjetoStatus {
     PAUSADO,
     APROVADO,
     RASCUNHO,
-    CANCELADO;
+    CANCELADO,
+    AJUSTES_SOLICITADOS;
+
+    public boolean automatico() {
+        return this == EM_REVISAO || this == APROVADO || this == AJUSTES_SOLICITADOS;
+    }
+
+    public boolean permiteEnvioDeVersao() {
+        return this == RASCUNHO || this == EM_ANDAMENTO || this == AJUSTES_SOLICITADOS;
+    }
 
     @JsonValue
     public String toJson() {

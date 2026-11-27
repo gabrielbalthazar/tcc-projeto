@@ -53,6 +53,9 @@ public class VersaoService {
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "O video excede o limite de 100 MB");
         }
         Projeto projeto = projetoService.findDoEditor(projetoId, editor);
+        if (!projeto.getStatus().permiteEnvioDeVersao()) {
+            throw new ApiException(HttpStatus.CONFLICT, "O status atual do projeto não permite enviar uma nova versão");
+        }
         ArquivoStorage.ArquivoArmazenado salvo = storage.enviar(arquivo, "takehub/projetos/" + projeto.getId());
 
         Versao versao = new Versao();
@@ -93,7 +96,7 @@ public class VersaoService {
         versao.setComentarioCliente(request.comentario());
         versao.setAvaliadaEm(LocalDateTime.now());
         Projeto projeto = versao.getProjeto();
-        projeto.setStatus(aprovar ? ProjetoStatus.APROVADO : ProjetoStatus.EM_ANDAMENTO);
+        projeto.setStatus(aprovar ? ProjetoStatus.APROVADO : ProjetoStatus.AJUSTES_SOLICITADOS);
         if (aprovar) {
             projeto.setFeedbackAutor(null);
             projeto.setFeedbackVersao(null);

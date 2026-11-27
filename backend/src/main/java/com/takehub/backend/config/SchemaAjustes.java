@@ -24,5 +24,6 @@ public class SchemaAjustes implements ApplicationRunner {
         jdbcTemplate.execute("ALTER TABLE users ALTER COLUMN senha_hash DROP NOT NULL");
         // Videos antes ficavam em disco local; agora ficam no Cloudinary (arquivo_url).
         jdbcTemplate.execute("ALTER TABLE versoes DROP COLUMN IF EXISTS caminho_arquivo");
+        jdbcTemplate.execute("ALTER TABLE projetos DROP CONSTRAINT IF EXISTS projetos_status_check");
     }
 }

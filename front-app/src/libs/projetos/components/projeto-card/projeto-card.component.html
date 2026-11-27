@@ -16,6 +16,10 @@
     <span class="feedback-autor">
       — {{ projeto.feedback.autor }} · {{ projeto.feedback.versao }} · {{ projeto.feedback.data | date: 'dd/MM/yyyy' }}
     </span>
+    <button class="feedback-link" type="button" (click)="historico.emit(projeto)">
+      Ver histórico completo
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
   </div>
 
   <div class="progresso-row">
@@ -39,9 +43,12 @@
 
   <div class="card-actions">
     <span class="cliente">Cliente: <strong>{{ projeto.cliente }}</strong></span>
-    <button class="enviar-btn" type="button" (click)="enviarAoCliente.emit(projeto)">
+    <button *ngIf="podeEnviar" class="enviar-btn" type="button" (click)="enviarAoCliente.emit(projeto)">
       <mat-icon>send</mat-icon>
       Enviar ao Cliente
+    </button>
+    <button class="icone-btn" type="button" (click)="historico.emit(projeto)" aria-label="Histórico de revisões" title="Histórico de revisões">
+      <mat-icon>history</mat-icon>
     </button>
     <button class="icone-btn" type="button" (click)="editar.emit(projeto)" aria-label="Editar projeto" title="Editar">
       <mat-icon>edit</mat-icon>

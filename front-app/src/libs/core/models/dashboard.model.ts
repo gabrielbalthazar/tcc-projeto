@@ -1,5 +1,9 @@
 export type ProjetoStatus =
-  'em_andamento' | 'em_revisao' | 'pausado' | 'aprovado' | 'rascunho' | 'cancelado';
+  'em_andamento' | 'em_revisao' | 'pausado' | 'aprovado' | 'rascunho' | 'cancelado' | 'ajustes_solicitados';
+
+export const STATUS_MANUAIS: ProjetoStatus[] = ['rascunho', 'em_andamento', 'pausado', 'cancelado'];
+
+export const STATUS_COM_ENVIO: ProjetoStatus[] = ['rascunho', 'em_andamento', 'ajustes_solicitados'];
 
 export interface StatCard {
   icon: string;

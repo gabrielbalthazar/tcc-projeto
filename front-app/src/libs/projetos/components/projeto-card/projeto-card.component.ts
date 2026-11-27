@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Projeto } from '../../../core/models/projeto.model';
-import { ProjetoStatus } from '../../../core/models/dashboard.model';
+import { ProjetoStatus, STATUS_COM_ENVIO } from '../../../core/models/dashboard.model';
 
 @Component({
   selector: 'app-projeto-card',
@@ -12,7 +12,12 @@ export class ProjetoCardComponent {
   @Input() projeto!: Projeto;
   @Output() enviarAoCliente = new EventEmitter<Projeto>();
   @Output() editar = new EventEmitter<Projeto>();
+  @Output() historico = new EventEmitter<Projeto>();
   @Output() excluir = new EventEmitter<string>();
+
+  get podeEnviar(): boolean {
+    return STATUS_COM_ENVIO.includes(this.projeto.status);
+  }
 
   get statusLabel(): string {
     const labels: Record<ProjetoStatus, string> = {
@@ -22,6 +27,7 @@ export class ProjetoCardComponent {
       aprovado: 'Aprovado',
       rascunho: 'Rascunho',
       cancelado: 'Cancelado',
+      ajustes_solicitados: 'Ajuste solicitado',
     };
     return labels[this.projeto.status];
   }
@@ -34,6 +40,7 @@ export class ProjetoCardComponent {
       aprovado: 'badge-aprovado',
       rascunho: 'badge-pausado',
       cancelado: 'badge-pausado',
+      ajustes_solicitados: 'badge-ajustes',
     };
     return classes[this.projeto.status];
   }

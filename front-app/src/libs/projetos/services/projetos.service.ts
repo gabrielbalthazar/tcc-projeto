@@ -34,6 +34,10 @@ export class ProjetosService {
     return this.http.delete<void>(`${this.API}/${id}`);
   }
 
+  getVersoes(projetoId: string): Observable<Versao[]> {
+    return this.http.get<Versao[]>(`${this.API}/${projetoId}/versoes`);
+  }
+
   enviarVersao(projetoId: string, arquivo: File, mensagem: string): Observable<HttpEvent<Versao>> {
     const form = new FormData();
     form.append('arquivo', arquivo);

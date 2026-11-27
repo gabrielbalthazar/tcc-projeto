@@ -15,6 +15,7 @@ const STATUS_LABEL: Record<ProjetoStatus, string> = {
   aprovado: 'Aprovado',
   cancelado: 'Cancelado',
   rascunho: 'Rascunho',
+  ajustes_solicitados: 'Ajustes solicitados',
 };
 
 @Component({

@@ -5,6 +5,7 @@ import { ProjetosService } from '../services/projetos.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import { NovoProjetoModalComponent } from '../components/novo-projeto-modal/novo-projeto-modal.component';
 import { EnviarVersaoModalComponent } from '../components/enviar-versao-modal/enviar-versao-modal.component';
+import { HistoricoRevisoesModalComponent } from '../components/historico-revisoes-modal/historico-revisoes-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface StatusFilter {
@@ -29,6 +30,7 @@ export class ProjetosComponent implements OnInit {
     { label: 'Todos', value: 'todos' },
     { label: 'Em andamento', value: 'em_andamento' },
     { label: 'Em revisão', value: 'em_revisao' },
+    { label: 'Ajuste solicitado', value: 'ajustes_solicitados' },
     { label: 'Pausado', value: 'pausado' },
     { label: 'Aprovado', value: 'aprovado' },
     { label: 'Rascunho', value: 'rascunho' },
@@ -115,6 +117,16 @@ export class ProjetosComponent implements OnInit {
       data: projeto,
     }).afterClosed().subscribe((enviado: boolean | undefined) => {
       if (enviado) this.carregarProjetos();
+    });
+  }
+
+  abrirHistorico(projeto: Projeto): void {
+    this.dialog.open(HistoricoRevisoesModalComponent, {
+      width: '860px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      panelClass: 'app-dialog-panel',
+      data: projeto,
     });
   }
 

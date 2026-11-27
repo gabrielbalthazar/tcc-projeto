@@ -75,6 +75,10 @@ public class ProjetoService {
 
     public ProjetoResponse updateProjeto(UUID id, UpdateProjetoRequest request, User editor) {
         Projeto projeto = findDoEditor(id, editor);
+        if (request.status() != projeto.getStatus() && request.status().automatico()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                    "Este status é definido automaticamente pelo envio e avaliação dos vídeos.");
+        }
         projeto.setNome(request.nome());
         projeto.setDescricao(request.descricao());
         if (!projeto.getCliente().getId().equals(request.clienteId())) {

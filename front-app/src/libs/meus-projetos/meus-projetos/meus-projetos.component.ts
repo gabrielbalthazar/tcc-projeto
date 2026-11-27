@@ -46,6 +46,12 @@ const STATUS_INFO: Record<ProjetoStatus, StatusInfo> = {
     icone: 'cancel',
     mensagem: 'Projeto cancelado',
   },
+  ajustes_solicitados: {
+    label: 'Ajustes solicitados',
+    badge: 'badge-ajustes',
+    icone: 'build',
+    mensagem: 'O editor está trabalhando nos ajustes que você pediu',
+  },
   rascunho: {
     label: 'Rascunho',
     badge: 'badge-neutro',
@@ -71,6 +77,7 @@ export class MeusProjetosComponent implements OnInit {
     { label: 'Todos os ativos', value: 'ativos' },
     { label: 'Em revisão', value: 'em_revisao' },
     { label: 'Em andamento', value: 'em_andamento' },
+    { label: 'Ajustes solicitados', value: 'ajustes_solicitados' },
     { label: 'Pausados', value: 'pausado' },
     { label: 'Aprovados', value: 'aprovado' },
     { label: 'Todos os projetos', value: 'todos' },

@@ -107,7 +107,7 @@ class VersaoServiceTest {
                 new AvaliacaoVersaoRequest("ajustes", "Reduzir a introdução"), cliente);
 
         assertEquals(VersaoStatus.AJUSTES_SOLICITADOS, versao.getStatus());
-        assertEquals(ProjetoStatus.EM_ANDAMENTO, projeto.getStatus());
+        assertEquals(ProjetoStatus.AJUSTES_SOLICITADOS, projeto.getStatus());
         assertEquals("Reduzir a introdução", projeto.getFeedbackMensagem());
         assertEquals("Cliente", projeto.getFeedbackAutor());
         assertEquals("v1", projeto.getFeedbackVersao());
@@ -125,6 +125,15 @@ class VersaoServiceTest {
     void rejectsUnsupportedVideoFormat() {
         MockMultipartFile avi = new MockMultipartFile("arquivo", "video.avi", "video/x-msvideo", new byte[] {1});
         assertThrows(ApiException.class, () -> service.criar(projeto.getId(), avi, "", editor));
+        verifyNoInteractions(storage);
+    }
+
+    @Test
+    void rejectsNewVersionWhileProjectIsInReview() {
+        projeto.setStatus(ProjetoStatus.EM_REVISAO);
+        when(projetoService.findDoEditor(projeto.getId(), editor)).thenReturn(projeto);
+        MockMultipartFile video = new MockMultipartFile("arquivo", "video.mp4", "video/mp4", new byte[] {1});
+        assertThrows(ApiException.class, () -> service.criar(projeto.getId(), video, "", editor));
         verifyNoInteractions(storage);
     }
 

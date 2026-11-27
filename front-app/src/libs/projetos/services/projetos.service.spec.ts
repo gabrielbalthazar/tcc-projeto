@@ -28,4 +28,15 @@ describe('ProjetosService', () => {
     expect(request.request.body.get('arquivo')).toBe(file);
     expect(request.request.body.get('mensagem')).toBe('Mensagem');
   });
+
+  it('loads the versions of a project for the revision history', () => {
+    let result: any;
+    service.getVersoes('p1').subscribe(versoes => result = versoes);
+
+    const request = http.expectOne(`${API_URL}/projetos/p1/versoes`);
+    expect(request.request.method).toBe('GET');
+    request.flush([{ id: 'v1', numero: 1, mensagemEditor: 'Primeira versão', comentarioCliente: 'Ajustar a trilha' }]);
+
+    expect(result[0].comentarioCliente).toBe('Ajustar a trilha');
+  });
 });

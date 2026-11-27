@@ -46,8 +46,12 @@
     <div class="select-field" *ngIf="projeto">
       <label>Status</label>
       <select formControlName="status">
-        <option *ngFor="let s of status" [value]="s.value">{{ s.label }}</option>
+        <option *ngIf="statusAtualAutomatico as atual" [value]="atual.value" disabled>{{ atual.label }} (atual)</option>
+        <option *ngFor="let s of statusManuais" [value]="s.value">{{ s.label }}</option>
       </select>
+      <span class="field-hint">
+        Em revisão, Ajuste solicitado e Aprovado mudam sozinhos conforme você envia vídeos e o cliente avalia.
+      </span>
     </div>
 
     <app-primary-button [label]="projeto ? 'Salvar alterações' : 'Criar Projeto'" type="submit" [loading]="loading"></app-primary-button>

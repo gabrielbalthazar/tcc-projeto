@@ -18,6 +18,7 @@ export class ProjectProgressItemComponent {
       aprovado: 'Aprovado',
       rascunho: 'Rascunho',
       cancelado: 'Cancelado',
+      ajustes_solicitados: 'Ajuste solicitado',
     };
     return labels[this.projeto.status];
   }
@@ -30,6 +31,7 @@ export class ProjectProgressItemComponent {
       aprovado: 'badge badge-aprovado',
       rascunho: 'badge badge-pausado',
       cancelado: 'badge badge-pausado',
+      ajustes_solicitados: 'badge badge-ajustes',
     };
     return classes[this.projeto.status];
   }

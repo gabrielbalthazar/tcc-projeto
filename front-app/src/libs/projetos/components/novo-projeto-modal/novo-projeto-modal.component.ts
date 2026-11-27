@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Inject, OnInit, Optional } from '@angular
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Projeto, ProjetoStatus } from '../../../core/models/projeto.model';
+import { STATUS_MANUAIS } from '../../../core/models/dashboard.model';
 import { Cliente } from '../../../core/models/cliente.model';
 import { ClientesService } from '../../../clientes/services/clientes.service';
 
@@ -17,14 +18,17 @@ export class NovoProjetoModalComponent implements OnInit {
 
   clientes: Cliente[] = [];
 
-  readonly status: { label: string; value: ProjetoStatus }[] = [
-    { label: 'Rascunho', value: 'rascunho' },
-    { label: 'Em andamento', value: 'em_andamento' },
-    { label: 'Em revisão', value: 'em_revisao' },
-    { label: 'Pausado', value: 'pausado' },
-    { label: 'Aprovado', value: 'aprovado' },
-    { label: 'Cancelado', value: 'cancelado' },
-  ];
+  private readonly statusLabels: Record<ProjetoStatus, string> = {
+    rascunho: 'Rascunho',
+    em_andamento: 'Em andamento',
+    pausado: 'Pausado',
+    cancelado: 'Cancelado',
+    em_revisao: 'Em revisão',
+    aprovado: 'Aprovado',
+    ajustes_solicitados: 'Ajuste solicitado',
+  };
+
+  readonly statusManuais = STATUS_MANUAIS.map(value => ({ value, label: this.statusLabels[value] }));
 
   constructor(
     private fb: FormBuilder,
@@ -56,6 +60,11 @@ export class NovoProjetoModalComponent implements OnInit {
     if (this.projeto) {
       this.form.patchValue(this.projeto);
     }
+  }
+
+  get statusAtualAutomatico(): { value: ProjetoStatus; label: string } | null {
+    if (!this.projeto || STATUS_MANUAIS.includes(this.projeto.status)) return null;
+    return { value: this.projeto.status, label: this.statusLabels[this.projeto.status] };
   }
 
   get nome() { return this.form.get('nome')!; }

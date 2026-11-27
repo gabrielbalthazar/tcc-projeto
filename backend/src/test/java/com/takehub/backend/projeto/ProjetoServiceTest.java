@@ -10,6 +10,9 @@ import com.takehub.backend.cliente.ClienteRepository;
 import com.takehub.backend.storage.ArquivoStorage;
 import com.takehub.backend.versao.Versao;
 import com.takehub.backend.versao.VersaoRepository;
+import com.takehub.backend.common.exception.ApiException;
+import com.takehub.backend.projeto.dto.UpdateProjetoRequest;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import com.takehub.backend.usuario.UsuarioService;
@@ -50,6 +53,29 @@ class ProjetoServiceTest {
 
         org.junit.jupiter.api.Assertions.assertEquals(75, projeto.getProgresso());
         verify(projetoRepository).save(projeto);
+    }
+
+    @Test
+    void editorCannotSetAutomaticStatusManually() {
+        ProjetoService service = new ProjetoService(
+                projetoRepository, tarefaRepository, usuarioService, clienteRepository,
+                versaoRepository, storage);
+        User editor = new User();
+        User cliente = new User();
+        cliente.setId(UUID.randomUUID());
+        Projeto projeto = new Projeto();
+        projeto.setId(UUID.randomUUID());
+        projeto.setCliente(cliente);
+        projeto.setStatus(ProjetoStatus.EM_ANDAMENTO);
+
+        when(projetoRepository.findByIdAndEditor(projeto.getId(), editor)).thenReturn(Optional.of(projeto));
+
+        UpdateProjetoRequest request = new UpdateProjetoRequest(
+                "Projeto", cliente.getId(), LocalDate.now(), "", ProjetoStatus.APROVADO, 0);
+
+        org.junit.jupiter.api.Assertions.assertThrows(ApiException.class,
+                () -> service.updateProjeto(projeto.getId(), request, editor));
+        org.junit.jupiter.api.Assertions.assertEquals(ProjetoStatus.EM_ANDAMENTO, projeto.getStatus());
     }
 
     @Test

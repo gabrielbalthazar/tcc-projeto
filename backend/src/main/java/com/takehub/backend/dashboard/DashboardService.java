@@ -45,7 +45,8 @@ public class DashboardService {
     }
 
     private List<StatCard> getStats(User editor) {
-        long projetosAtivos = projetoRepository.countByEditorAndStatus(editor, ProjetoStatus.EM_ANDAMENTO);
+        long projetosAtivos = projetoRepository.countByEditorAndStatus(editor, ProjetoStatus.EM_ANDAMENTO)
+                + projetoRepository.countByEditorAndStatus(editor, ProjetoStatus.AJUSTES_SOLICITADOS);
         long tarefasPendentes = tarefaRepository.countByProjetoEditorAndStatus(editor, TarefaStatus.PENDENTE);
         long emRevisao = projetoRepository.countByEditorAndStatus(editor, ProjetoStatus.EM_REVISAO);
         long concluidos = projetoRepository.countByEditorAndStatus(editor, ProjetoStatus.APROVADO);

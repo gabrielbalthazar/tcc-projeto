@@ -10,6 +10,7 @@ import { ProjetosComponent } from './projetos/projetos.component';
 import { ProjetoCardComponent } from './components/projeto-card/projeto-card.component';
 import { NovoProjetoModalComponent } from './components/novo-projeto-modal/novo-projeto-modal.component';
 import { EnviarVersaoModalComponent } from './components/enviar-versao-modal/enviar-versao-modal.component';
+import { HistoricoRevisoesModalComponent } from './components/historico-revisoes-modal/historico-revisoes-modal.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { EnviarVersaoModalComponent } from './components/enviar-versao-modal/env
     ProjetoCardComponent,
     NovoProjetoModalComponent,
     EnviarVersaoModalComponent,
+    HistoricoRevisoesModalComponent,
   ],
   imports: [
     CommonModule,
