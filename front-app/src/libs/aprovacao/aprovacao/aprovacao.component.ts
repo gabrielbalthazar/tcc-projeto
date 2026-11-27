@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AprovacaoService } from '../services/aprovacao.service';
+import { urlDeDownload } from '../../core/utils/download';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import {
   AprovacaoDecisao,
@@ -82,10 +83,9 @@ export class AprovacaoComponent implements OnInit {
   }
 
   baixarArquivo(): void {
-    // fl_attachment faz o Cloudinary entregar o arquivo como download em vez de abrir o player.
-    const url = this.material?.arquivo.url?.replace('/upload/', '/upload/fl_attachment/');
+    const url = this.material?.arquivo.url;
     if (url) {
-      window.location.assign(url);
+      window.location.assign(urlDeDownload(url));
     }
   }
 
@@ -104,9 +104,5 @@ export class AprovacaoComponent implements OnInit {
       },
       error: () => this.loadingService.hide(),
     });
-  }
-
-  trackByVersao(_index: number, item: { versao: number }): number {
-    return item.versao;
   }
 }

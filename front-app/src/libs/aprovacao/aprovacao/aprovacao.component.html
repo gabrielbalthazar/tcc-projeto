@@ -23,7 +23,9 @@
         <mat-icon>event</mat-icon>
         {{ dataFormatada }}
       </span>
-      <span class="versao-badge">Versão {{ material.versaoAtual }}</span>
+      <span class="versao-badge" [class.final]="aprovado">
+        {{ aprovado ? 'Versão final · v' + material.versaoAtual : 'Versão ' + material.versaoAtual }}
+      </span>
     </div>
   </header>
 
@@ -64,30 +66,6 @@
         Baixar arquivo
       </button>
     </div>
-  </section>
-
-  <section class="historico">
-    <h2>Histórico de revisões</h2>
-
-    <div
-      class="revisao"
-      *ngFor="let revisao of material.historico; trackBy: trackByVersao"
-      [class.aprovada]="revisao.status === 'aprovada'"
-    >
-      <mat-icon class="revisao-icon">
-        {{ revisao.status === 'aprovada' ? 'check_circle' : 'cancel' }}
-      </mat-icon>
-      <div class="revisao-body">
-        <span class="revisao-titulo">
-          Versão {{ revisao.versao }} — {{ revisao.status === 'aprovada' ? 'Aprovada' : 'Rejeitada' }}
-        </span>
-        <p class="revisao-comentario">"{{ revisao.comentario }}"</p>
-      </div>
-    </div>
-
-    <p class="historico-vazio" *ngIf="!material.historico.length">
-      Nenhuma revisão anterior neste projeto.
-    </p>
   </section>
 
   <section class="avaliacao-card">
@@ -155,4 +133,6 @@
       {{ textoBotao }}
     </button>
   </section>
+
+  <app-historico-versoes [versoes]="material.historico" [editor]="material.editor"></app-historico-versoes>
 </div>

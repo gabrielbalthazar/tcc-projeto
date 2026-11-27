@@ -4,9 +4,19 @@
     <h1>Meus projetos</h1>
   </div>
 
-  <div class="contagem">
-    <mat-icon>folder_open</mat-icon>
-    {{ totalAtivos }} {{ totalAtivos === 1 ? 'projeto ativo' : 'projetos ativos' }}
+  <div class="abas" role="tablist">
+    <button type="button" role="tab" class="aba" [class.ativa]="aba === 'ativos'"
+      [attr.aria-selected]="aba === 'ativos'" (click)="selecionarAba('ativos')">
+      <mat-icon>folder_open</mat-icon>
+      Ativos
+      <span class="aba-contador">{{ totalAtivos }}</span>
+    </button>
+    <button type="button" role="tab" class="aba" [class.ativa]="aba === 'concluidos'"
+      [attr.aria-selected]="aba === 'concluidos'" (click)="selecionarAba('concluidos')">
+      <mat-icon>inventory_2</mat-icon>
+      Concluídos
+      <span class="aba-contador">{{ totalConcluidos }}</span>
+    </button>
   </div>
 
   <div class="filters-row">
@@ -20,10 +30,6 @@
         (input)="onBusca($event)"
       />
     </div>
-
-    <select class="status-select" aria-label="Filtrar por status" (change)="onFiltro($event)">
-      <option *ngFor="let f of filtros" [value]="f.value" [selected]="f.value === filtro">{{ f.label }}</option>
-    </select>
   </div>
 
   <div class="lista" *ngIf="projetosFiltrados.length; else vazio">
@@ -76,7 +82,7 @@
           [class.primaria]="aguardandoAvaliacao(projeto)"
           (click)="abrirProjeto(projeto)"
         >
-          {{ aguardandoAvaliacao(projeto) ? 'Avaliar material' : 'Ver projeto' }}
+          {{ textoAcao(projeto) }}
           <mat-icon>north_east</mat-icon>
         </button>
       </div>
@@ -86,7 +92,10 @@
   <ng-template #vazio>
     <div class="empty-state">
       <mat-icon>folder_off</mat-icon>
-      <p>{{ projetos.length ? 'Nenhum projeto encontrado com esses filtros.' : 'Você ainda não tem projetos.' }}</p>
+      <p *ngIf="!projetos.length">Você ainda não tem projetos.</p>
+      <p *ngIf="projetos.length && busca">Nenhum projeto encontrado para "{{ busca }}".</p>
+      <p *ngIf="projetos.length && !busca && aba === 'ativos'">Nenhum projeto ativo no momento.</p>
+      <p *ngIf="projetos.length && !busca && aba === 'concluidos'">Projetos aprovados ou cancelados aparecem aqui, com todas as versões disponíveis para assistir e baixar.</p>
     </div>
   </ng-template>
 </div>

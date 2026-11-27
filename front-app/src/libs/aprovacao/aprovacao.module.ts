@@ -5,10 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { SharedModule } from '../shared/shared.module';
 import { AprovacaoRoutingModule } from './aprovacao-routing.module';
 import { AprovacaoComponent } from './aprovacao/aprovacao.component';
+import { HistoricoVersoesComponent } from './components/historico-versoes/historico-versoes.component';
 
 @NgModule({
   declarations: [
     AprovacaoComponent,
+    HistoricoVersoesComponent,
   ],
   imports: [
     CommonModule,

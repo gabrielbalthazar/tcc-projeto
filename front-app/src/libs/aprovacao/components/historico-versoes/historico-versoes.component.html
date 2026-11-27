@@ -1,0 +1,72 @@
+<section class="historico">
+  <div class="historico-header">
+    <h2>Versões anteriores</h2>
+    <span class="contador" *ngIf="versoes.length">{{ versoes.length }}</span>
+  </div>
+
+  <ol class="linha" *ngIf="versoes.length; else vazio">
+    <li
+      class="item"
+      *ngFor="let versao of versoes; trackBy: trackByVersao"
+      [ngClass]="'status-' + versao.status"
+    >
+      <span class="marcador">
+        <mat-icon>{{ meta(versao).icone }}</mat-icon>
+      </span>
+
+      <article class="cartao">
+        <header class="cartao-topo">
+          <div>
+            <strong class="titulo">Versão {{ versao.numero }}</strong>
+            <span class="data">Enviada em {{ versao.enviadaEm | date: 'dd/MM/yyyy' }}</span>
+          </div>
+          <span class="chip">{{ meta(versao).label }}</span>
+        </header>
+
+        <div class="balao editor" *ngIf="versao.mensagemEditor">
+          <span class="autor">
+            <mat-icon>movie</mat-icon>
+            {{ editor || 'Editor' }}
+          </span>
+          <p>{{ versao.mensagemEditor }}</p>
+        </div>
+
+        <div class="balao cliente" *ngIf="versao.avaliadaEm">
+          <span class="autor">
+            <mat-icon>person</mat-icon>
+            Você · {{ versao.avaliadaEm | date: 'dd/MM/yyyy' }}
+          </span>
+          <p *ngIf="versao.comentarioCliente; else semComentario">{{ versao.comentarioCliente }}</p>
+          <ng-template #semComentario><p class="sem-texto">Sem comentário</p></ng-template>
+        </div>
+
+        <video
+          *ngIf="videoAberto === versao.id"
+          class="video"
+          controls
+          autoplay
+          [src]="versao.arquivo.url || ''"
+        ></video>
+
+        <footer class="acoes" *ngIf="versao.arquivo.url">
+          <span class="arquivo" [title]="versao.arquivo.nome">
+            <mat-icon>description</mat-icon>
+            {{ versao.arquivo.nome }}
+          </span>
+          <button type="button" class="acao" (click)="alternarVideo(versao)">
+            <mat-icon>{{ videoAberto === versao.id ? 'close' : 'play_arrow' }}</mat-icon>
+            {{ videoAberto === versao.id ? 'Fechar' : 'Assistir' }}
+          </button>
+          <button type="button" class="acao" (click)="baixar(versao)">
+            <mat-icon>download</mat-icon>
+            Baixar
+          </button>
+        </footer>
+      </article>
+    </li>
+  </ol>
+
+  <ng-template #vazio>
+    <p class="vazio">Esta é a primeira versão do projeto.</p>
+  </ng-template>
+</section>

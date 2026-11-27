@@ -44,6 +44,12 @@
     border: 1px solid var(--color-border);
     padding: 3px 10px;
     border-radius: 20px;
+
+    &.final {
+      color: #065f46;
+      background: #d1fae5;
+      border-color: #6ee7b7;
+    }
   }
 }
 
@@ -180,81 +186,6 @@
     height: 18px;
     flex-shrink: 0;
   }
-}
-
-.historico {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  h2 {
-    font-size: 13px;
-    font-weight: 700;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin: 0 0 2px;
-  }
-}
-
-.revisao {
-  display: flex;
-  gap: 12px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 12px;
-  padding: 14px 16px;
-
-  &.aprovada {
-    background: #ecfdf5;
-    border-color: #a7f3d0;
-
-    .revisao-icon {
-      color: #059669;
-    }
-
-    .revisao-titulo {
-      color: #065f46;
-    }
-
-    .revisao-comentario {
-      color: #047857;
-    }
-  }
-
-  .revisao-icon {
-    color: #dc2626;
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  .revisao-body {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .revisao-titulo {
-    font-size: 13px;
-    font-weight: 700;
-    color: #991b1b;
-  }
-
-  .revisao-comentario {
-    font-size: 13px;
-    line-height: 1.5;
-    color: #b91c1c;
-    margin: 0;
-  }
-}
-
-.historico-vazio {
-  font-size: 13px;
-  color: #9ca3af;
-  margin: 0;
 }
 
 .avaliacao-card {

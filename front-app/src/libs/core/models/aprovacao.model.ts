@@ -2,13 +2,7 @@ export type AprovacaoDecisao = 'aprovar' | 'ajustes';
 
 export type MaterialStatus = 'pendente' | 'aprovado' | 'ajustes_solicitados';
 
-export type RevisaoStatus = 'rejeitada' | 'aprovada';
-
-export interface RevisaoHistorico {
-  versao: number;
-  status: RevisaoStatus;
-  comentario: string;
-}
+export type RevisaoStatus = 'pendente' | 'rejeitada' | 'aprovada';
 
 export interface MaterialArquivo {
   nome: string;
@@ -18,6 +12,17 @@ export interface MaterialArquivo {
 export interface MaterialCliente {
   nome: string;
   email: string;
+}
+
+export interface VersaoHistorico {
+  id: string;
+  numero: number;
+  status: RevisaoStatus;
+  mensagemEditor: string;
+  comentarioCliente: string;
+  enviadaEm: Date;
+  avaliadaEm?: Date;
+  arquivo: MaterialArquivo;
 }
 
 export interface MaterialAprovacao {
@@ -32,7 +37,7 @@ export interface MaterialAprovacao {
   mensagemEditor: string;
   comentarioCliente: string;
   arquivo: MaterialArquivo;
-  historico: RevisaoHistorico[];
+  historico: VersaoHistorico[];
 }
 
 export interface AvaliacaoPayload {

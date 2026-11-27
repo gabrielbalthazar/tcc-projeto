@@ -47,6 +47,10 @@ describe('AprovacaoService', () => {
 
     expect(result.versaoAtual).toBe(2);
     expect(result.arquivo.nome).toBe('video-v2.mp4');
-    expect(result.historico[0].comentario).toBe('Ajustar a introdução');
+    expect(result.historico.length).toBe(1);
+    expect(result.historico[0].numero).toBe(1);
+    expect(result.historico[0].status).toBe('rejeitada');
+    expect(result.historico[0].comentarioCliente).toBe('Ajustar a introdução');
+    expect(result.historico[0].arquivo.url).toBe('/api/versoes/v1/arquivo');
   });
 });

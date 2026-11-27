@@ -4,7 +4,7 @@ import { Projeto, ProjetoStatus } from '../../core/models/projeto.model';
 import { ProjetosService } from '../../projetos/services/projetos.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 
-type FiltroStatus = 'ativos' | 'todos' | ProjetoStatus;
+type Aba = 'ativos' | 'concluidos';
 
 interface StatusInfo {
   label: string;
@@ -71,17 +71,7 @@ export class MeusProjetosComponent implements OnInit {
   projetosFiltrados: Projeto[] = [];
 
   busca = '';
-  filtro: FiltroStatus = 'ativos';
-
-  readonly filtros: { label: string; value: FiltroStatus }[] = [
-    { label: 'Todos os ativos', value: 'ativos' },
-    { label: 'Em revisão', value: 'em_revisao' },
-    { label: 'Em andamento', value: 'em_andamento' },
-    { label: 'Ajustes solicitados', value: 'ajustes_solicitados' },
-    { label: 'Pausados', value: 'pausado' },
-    { label: 'Aprovados', value: 'aprovado' },
-    { label: 'Todos os projetos', value: 'todos' },
-  ];
+  aba: Aba = 'ativos';
 
   constructor(
     private projetosService: ProjetosService,
@@ -105,6 +95,10 @@ export class MeusProjetosComponent implements OnInit {
     return this.projetos.filter(p => this.ativo(p)).length;
   }
 
+  get totalConcluidos(): number {
+    return this.projetos.length - this.totalAtivos;
+  }
+
   info(projeto: Projeto): StatusInfo {
     return STATUS_INFO[projeto.status];
   }
@@ -123,9 +117,15 @@ export class MeusProjetosComponent implements OnInit {
     this.aplicarFiltros();
   }
 
-  onFiltro(event: Event): void {
-    this.filtro = (event.target as HTMLSelectElement).value as FiltroStatus;
+  selecionarAba(aba: Aba): void {
+    this.aba = aba;
     this.aplicarFiltros();
+  }
+
+  textoAcao(projeto: Projeto): string {
+    if (this.aguardandoAvaliacao(projeto)) return 'Avaliar material';
+    if (projeto.status === 'aprovado') return 'Ver vídeos';
+    return 'Ver projeto';
   }
 
   abrirProjeto(projeto: Projeto): void {
@@ -144,8 +144,7 @@ export class MeusProjetosComponent implements OnInit {
         || projeto.nome.toLowerCase().includes(termo)
         || (projeto.descricao ?? '').toLowerCase().includes(termo);
 
-      const combinaFiltro = this.filtro === 'todos'
-        || (this.filtro === 'ativos' ? this.ativo(projeto) : projeto.status === this.filtro);
+      const combinaFiltro = this.aba === 'ativos' ? this.ativo(projeto) : !this.ativo(projeto);
 
       return combinaBusca && combinaFiltro;
     });

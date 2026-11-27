@@ -5,7 +5,9 @@ import { API_URL } from '../../core/api.config';
 import {
   AvaliacaoPayload,
   MaterialAprovacao,
+  RevisaoStatus,
   Versao,
+  VersaoHistorico,
 } from '../../core/models/aprovacao.model';
 import { ProjetosService } from '../../projetos/services/projetos.service';
 import { Projeto } from '../../core/models/projeto.model';
@@ -35,6 +37,21 @@ export class AprovacaoService {
     }).pipe(switchMap(versao => this.getMaterial(versao.projetoId)));
   }
 
+  private toHistorico(versao: Versao): VersaoHistorico {
+    const status: RevisaoStatus = versao.status === 'aprovada' ? 'aprovada'
+      : versao.status === 'ajustes_solicitados' ? 'rejeitada' : 'pendente';
+    return {
+      id: versao.id,
+      numero: versao.numero,
+      status,
+      mensagemEditor: versao.mensagemEditor ?? '',
+      comentarioCliente: versao.comentarioCliente ?? '',
+      enviadaEm: new Date(versao.criadaEm),
+      avaliadaEm: versao.avaliadaEm ? new Date(versao.avaliadaEm) : undefined,
+      arquivo: { nome: versao.nomeArquivo, url: versao.arquivoUrl },
+    };
+  }
+
   private toMaterial(projeto: Projeto, versoes: Versao[]): MaterialAprovacao {
     const atual = versoes[0];
     return {
@@ -50,11 +67,7 @@ export class AprovacaoService {
       mensagemEditor: atual?.mensagemEditor ?? '',
       comentarioCliente: atual?.comentarioCliente ?? '',
       arquivo: { nome: atual?.nomeArquivo ?? '', url: atual?.arquivoUrl },
-      historico: versoes.slice(1).filter(v => !!v.avaliadaEm).map(v => ({
-        versao: v.numero,
-        status: v.status === 'aprovada' ? 'aprovada' : 'rejeitada',
-        comentario: v.comentarioCliente ?? '',
-      })),
+      historico: versoes.slice(1).map(v => this.toHistorico(v)),
     };
   }
 }
