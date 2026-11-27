@@ -39,7 +39,7 @@
 
   <div class="card-actions">
     <span class="cliente">Cliente: <strong>{{ projeto.cliente }}</strong></span>
-    <button class="enviar-btn" type="button" (click)="enviarAoCliente.emit(projeto.id)">
+    <button class="enviar-btn" type="button" (click)="enviarAoCliente.emit(projeto)">
       <mat-icon>send</mat-icon>
       Enviar ao Cliente
     </button>

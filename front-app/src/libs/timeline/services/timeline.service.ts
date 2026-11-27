@@ -23,13 +23,6 @@ export class TimelineService {
     );
   }
 
-  enviarVersao(projetoId: string, arquivo: File, mensagem: string): Observable<Versao> {
-    const form = new FormData();
-    form.append('arquivo', arquivo);
-    form.append('mensagem', mensagem);
-    return this.http.post<Versao>(`${API_URL}/projetos/${projetoId}/versoes`, form);
-  }
-
   private toTimeline(projeto: Projeto, versoes: Versao[]): TimelineProjeto {
     return {
       id: projeto.id, projeto: projeto.nome, cliente: projeto.cliente,

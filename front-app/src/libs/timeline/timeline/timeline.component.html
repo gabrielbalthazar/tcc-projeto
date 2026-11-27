@@ -10,15 +10,6 @@
     </select>
   </div>
 
-  <section class="envio-versao">
-    <h2>Enviar nova versão</h2>
-    <p class="dica" *ngIf="projetoSelecionado === 'todos'">Selecione um projeto no topo da página para enviar um vídeo.</p>
-    <input #campoArquivo type="file" accept="video/*" (change)="selecionarArquivo($event)">
-    <input type="text" [(ngModel)]="mensagem" placeholder="Mensagem para o cliente">
-    <button type="button" [disabled]="!arquivo || projetoSelecionado === 'todos' || enviando"
-      (click)="enviarVersao(campoArquivo)">Enviar ao cliente</button>
-  </section>
-
   <div class="lista">
     <article
       class="projeto-card"

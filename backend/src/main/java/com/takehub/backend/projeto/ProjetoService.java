@@ -119,7 +119,7 @@ public class ProjetoService {
                 .filter(v -> v.getStatus() == VersaoStatus.AGUARDANDO_REVISAO)
                 .isPresent();
         if (!temVideoPendente) {
-            throw new ApiException(HttpStatus.CONFLICT, "Envie uma nova versão do vídeo pela Timeline antes de enviar ao cliente.");
+            throw new ApiException(HttpStatus.CONFLICT, "Envie uma nova versão do vídeo antes de enviar ao cliente.");
         }
         projeto.setStatus(ProjetoStatus.EM_REVISAO);
         projetoRepository.save(projeto);

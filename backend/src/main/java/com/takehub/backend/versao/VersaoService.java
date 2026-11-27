@@ -9,6 +9,8 @@ import com.takehub.backend.versao.dto.VersaoResponse;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ import com.takehub.backend.storage.ArquivoStorage;
 @Service
 public class VersaoService {
     private static final long TAMANHO_MAXIMO = 100L * 1024 * 1024; // limite do plano gratuito do Cloudinary
+
+    private static final Set<String> TIPOS_ACEITOS = Set.of("video/mp4", "video/quicktime");
+    private static final Set<String> EXTENSOES_ACEITAS = Set.of("mp4", "mov");
 
     private final VersaoRepository repository;
     private final ProjetoService projetoService;
@@ -41,8 +46,8 @@ public class VersaoService {
         if (arquivo == null || arquivo.isEmpty()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Arquivo de video e obrigatorio");
         }
-        if (arquivo.getContentType() == null || !arquivo.getContentType().startsWith("video/")) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "O arquivo enviado precisa ser um video");
+        if (!formatoAceito(arquivo)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "O video precisa estar no formato .mp4 ou .mov");
         }
         if (arquivo.getSize() > TAMANHO_MAXIMO) {
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "O video excede o limite de 100 MB");
@@ -102,5 +107,12 @@ public class VersaoService {
             projeto.setFeedbackRejeicoes((projeto.getFeedbackRejeicoes() == null ? 0 : projeto.getFeedbackRejeicoes()) + 1);
         }
         return VersaoResponse.from(repository.save(versao));
+    }
+
+    private boolean formatoAceito(MultipartFile arquivo) {
+        String nome = arquivo.getOriginalFilename() == null ? "" : arquivo.getOriginalFilename();
+        String extensao = nome.contains(".") ? nome.substring(nome.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT) : "";
+        String tipo = arquivo.getContentType() == null ? "" : arquivo.getContentType().toLowerCase(Locale.ROOT);
+        return EXTENSOES_ACEITAS.contains(extensao) && TIPOS_ACEITOS.contains(tipo);
     }
 }

@@ -4,6 +4,7 @@ import { Projeto, ProjetoStatus, CreateProjetoPayload, UpdateProjetoPayload } fr
 import { ProjetosService } from '../services/projetos.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import { NovoProjetoModalComponent } from '../components/novo-projeto-modal/novo-projeto-modal.component';
+import { EnviarVersaoModalComponent } from '../components/enviar-versao-modal/enviar-versao-modal.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface StatusFilter {
@@ -105,15 +106,15 @@ export class ProjetosComponent implements OnInit {
     });
   }
 
-  enviarAoCliente(id: string): void {
-    this.loadingService.show('Enviando ao cliente...');
-    this.projetosService.enviarAoCliente(id).subscribe({
-      next: () => {
-        this.carregarProjetos();
-      },
-      error: () => {
-        this.loadingService.hide();
-      }
+  enviarAoCliente(projeto: Projeto): void {
+    this.dialog.open(EnviarVersaoModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      panelClass: 'app-dialog-panel',
+      data: projeto,
+    }).afterClosed().subscribe((enviado: boolean | undefined) => {
+      if (enviado) this.carregarProjetos();
     });
   }
 

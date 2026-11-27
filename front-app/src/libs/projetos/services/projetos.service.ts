@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_URL } from '../../core/api.config';
 import { CreateProjetoPayload, Projeto, UpdateProjetoPayload } from '../../core/models/projeto.model';
+import { Versao } from '../../core/models/aprovacao.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProjetosService {
@@ -33,7 +34,13 @@ export class ProjetosService {
     return this.http.delete<void>(`${this.API}/${id}`);
   }
 
-  enviarAoCliente(id: string): Observable<Projeto> {
-    return this.http.post<Projeto>(`${this.API}/${id}/enviar`, {});
+  enviarVersao(projetoId: string, arquivo: File, mensagem: string): Observable<HttpEvent<Versao>> {
+    const form = new FormData();
+    form.append('arquivo', arquivo);
+    form.append('mensagem', mensagem);
+    return this.http.post<Versao>(`${this.API}/${projetoId}/versoes`, form, {
+      reportProgress: true,
+      observe: 'events',
+    });
   }
 }

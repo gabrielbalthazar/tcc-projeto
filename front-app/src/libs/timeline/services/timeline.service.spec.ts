@@ -38,13 +38,4 @@ describe('TimelineService', () => {
     expect(result[0].eventos[0].status).toBe('aguardando_revisao');
   });
 
-  it('sends a video as multipart form data', () => {
-    const file = new File(['video'], 'video.mp4', { type: 'video/mp4' });
-    service.enviarVersao('p1', file, 'Mensagem').subscribe();
-
-    const request = http.expectOne(`${API_URL}/projetos/p1/versoes`);
-    expect(request.request.method).toBe('POST');
-    expect(request.request.body.get('arquivo')).toBe(file);
-    expect(request.request.body.get('mensagem')).toBe('Mensagem');
-  });
 });

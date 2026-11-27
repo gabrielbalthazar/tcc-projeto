@@ -122,6 +122,13 @@ class VersaoServiceTest {
     }
 
     @Test
+    void rejectsUnsupportedVideoFormat() {
+        MockMultipartFile avi = new MockMultipartFile("arquivo", "video.avi", "video/x-msvideo", new byte[] {1});
+        assertThrows(ApiException.class, () -> service.criar(projeto.getId(), avi, "", editor));
+        verifyNoInteractions(storage);
+    }
+
+    @Test
     void cannotEvaluateTwice() {
         Versao versao = version();
         versao.setStatus(VersaoStatus.APROVADA);

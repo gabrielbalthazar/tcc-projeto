@@ -1,0 +1,90 @@
+<div class="modal">
+  <div class="modal-header">
+    <div>
+      <h2>Enviar ao cliente</h2>
+      <p class="subtitulo">{{ projeto.nome }} · {{ projeto.cliente }}</p>
+    </div>
+    <button class="close-btn" type="button" (click)="fechar()" [disabled]="enviando" aria-label="Fechar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <label
+    *ngIf="!arquivo"
+    class="dropzone"
+    [class.arrastando]="arrastando"
+    [class.com-erro]="erro"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+  >
+    <input type="file" [accept]="accept" (change)="onSelecionar($event)" hidden />
+    <span class="dropzone-icone">
+      <mat-icon>cloud_upload</mat-icon>
+    </span>
+    <span class="dropzone-titulo">
+      {{ arrastando ? 'Solte o vídeo aqui' : 'Arraste e solte o vídeo aqui' }}
+    </span>
+    <span class="dropzone-sub">ou <strong>clique para escolher</strong> um arquivo</span>
+    <span class="especificacoes">
+      <span class="chip">MP4</span>
+      <span class="chip">MOV</span>
+      <span class="chip">Máx. 100 MB</span>
+    </span>
+  </label>
+
+  <div class="arquivo-card" *ngIf="arquivo">
+    <span class="arquivo-thumb">
+      <mat-icon>movie</mat-icon>
+      <span class="arquivo-ext">{{ extensao }}</span>
+    </span>
+    <div class="arquivo-info">
+      <span class="arquivo-nome" [title]="arquivo.name">{{ arquivo.name }}</span>
+      <span class="arquivo-meta" *ngIf="!enviando">{{ formatarTamanho(arquivo.size) }} · Pronto para envio</span>
+      <ng-container *ngIf="enviando">
+        <div class="upload-bar">
+          <div class="upload-fill" [style.width.%]="progresso"></div>
+        </div>
+        <span class="arquivo-meta">{{ statusEnvio }}</span>
+      </ng-container>
+    </div>
+    <button
+      *ngIf="!enviando"
+      class="remover-btn"
+      type="button"
+      (click)="removerArquivo()"
+      aria-label="Remover arquivo"
+      title="Remover"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <p class="erro" *ngIf="erro">
+    <mat-icon>error_outline</mat-icon>
+    {{ erro }}
+  </p>
+
+  <div class="campo-mensagem">
+    <label for="mensagem-cliente">Mensagem para o cliente <span class="opcional">(opcional)</span></label>
+    <textarea
+      id="mensagem-cliente"
+      rows="4"
+      maxlength="1000"
+      placeholder="Ex: Ajustei a trilha e as cores conforme o feedback anterior."
+      [(ngModel)]="mensagem"
+      [disabled]="enviando"
+    ></textarea>
+    <span class="contador">{{ mensagem.length }}/1000</span>
+  </div>
+
+  <div class="acoes">
+    <button class="secundario-btn" type="button" (click)="enviando ? cancelarEnvio() : fechar()">
+      {{ enviando ? 'Cancelar envio' : 'Cancelar' }}
+    </button>
+    <button class="primario-btn" type="button" [disabled]="!arquivo || enviando" (click)="enviar()">
+      <mat-icon>send</mat-icon>
+      {{ enviando ? 'Enviando…' : 'Enviar ao cliente' }}
+    </button>
+  </div>
+</div>

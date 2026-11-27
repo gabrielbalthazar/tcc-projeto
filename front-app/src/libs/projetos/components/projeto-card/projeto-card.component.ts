@@ -10,7 +10,7 @@ import { ProjetoStatus } from '../../../core/models/dashboard.model';
 })
 export class ProjetoCardComponent {
   @Input() projeto!: Projeto;
-  @Output() enviarAoCliente = new EventEmitter<string>();
+  @Output() enviarAoCliente = new EventEmitter<Projeto>();
   @Output() editar = new EventEmitter<Projeto>();
   @Output() excluir = new EventEmitter<string>();
 
