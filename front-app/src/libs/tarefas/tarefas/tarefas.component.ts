@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CreateTarefaPayload, Tarefa, TarefaStatus } from '../../core/models/tarefa.model';
@@ -6,6 +6,7 @@ import { TarefasService } from '../services/tarefas.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import { NovaTarefaModalComponent } from '../components/nova-tarefa-modal/nova-tarefa-modal.component';
 import { MudancaStatus } from '../components/tarefa-card/tarefa-card.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface Coluna {
   status: TarefaStatus;
@@ -36,6 +37,7 @@ export class TarefasComponent implements OnInit {
   readonly dropListIds = this.colunas.map(c => `coluna-${c.status}`);
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private tarefasService: TarefasService,
     private loadingService: LoadingService,
     private dialog: MatDialog,
@@ -51,6 +53,9 @@ export class TarefasComponent implements OnInit {
       next: (tarefas) => {
         this.tarefas = tarefas;
         this.projetos = Array.from(new Set(tarefas.map(t => t.projeto)));
+        if (!this.projetos.includes(this.projetoSelecionado)) {
+          this.projetoSelecionado = 'todos';
+        }
         this.distribuirColunas();
         this.loadingService.hide();
       },
@@ -102,7 +107,10 @@ export class TarefasComponent implements OnInit {
     }
 
     this.tarefasService.atualizarStatus(id, status).subscribe({
-      next: () => this.distribuirColunas(),
+      next: () => {
+        this.distribuirColunas();
+        this.cdr.markForCheck();
+      },
       error: () => this.carregarTarefas(),
     });
   }
@@ -127,5 +135,42 @@ export class TarefasComponent implements OnInit {
         }
       });
     });
+  }
+
+  editarTarefa(tarefa: Tarefa): void {
+    const dialogRef = this.dialog.open(NovaTarefaModalComponent, {
+      width: '420px',
+      autoFocus: false,
+      panelClass: 'app-dialog-panel',
+      data: tarefa,
+    });
+
+    dialogRef.afterClosed().subscribe((payload: CreateTarefaPayload | undefined) => {
+      if (!payload) return;
+
+      this.loadingService.show('Salvando tarefa...');
+      this.tarefasService.updateTarefa(tarefa.id, payload).subscribe({
+        next: () => this.carregarTarefas(),
+        error: () => this.loadingService.hide(),
+      });
+    });
+  }
+
+  excluirTarefa(tarefa: Tarefa): void {
+    const data: ConfirmDialogData = {
+      titulo: 'Excluir tarefa?',
+      mensagem: `A tarefa "${tarefa.titulo}" será apagada. Essa ação não pode ser desfeita.`,
+    };
+
+    this.dialog.open(ConfirmDialogComponent, { width: '400px', panelClass: 'app-dialog-panel', data })
+      .afterClosed().subscribe((confirmado) => {
+        if (!confirmado) return;
+
+        this.loadingService.show('Excluindo tarefa...');
+        this.tarefasService.deleteTarefa(tarefa.id).subscribe({
+          next: () => this.carregarTarefas(),
+          error: () => this.loadingService.hide(),
+        });
+      });
   }
 }

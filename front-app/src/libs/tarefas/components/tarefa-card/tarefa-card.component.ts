@@ -14,6 +14,8 @@ export interface MudancaStatus {
 })
 export class TarefaCardComponent {
   @Input() tarefa!: Tarefa;
+  @Output() editar = new EventEmitter<Tarefa>();
+  @Output() excluir = new EventEmitter<Tarefa>();
   @Output() mudarStatus = new EventEmitter<MudancaStatus>();
 
   readonly statusOptions: { label: string; value: TarefaStatus }[] = [

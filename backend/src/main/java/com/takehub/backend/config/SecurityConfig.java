@@ -53,8 +53,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/projetos", "/api/projetos/*").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/projetos/*/versoes")
+                        .authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/versoes/*/avaliar").hasRole("CLIENTE")
                         .requestMatchers("/api/projetos/**", "/api/tarefas/**", "/api/dashboard/**",
-                                "/api/clientes/**")
+                                "/api/clientes/**", "/api/projetos/*/versoes")
                         .hasRole("EDITOR")
                         .anyRequest().authenticated())
                 .addFilterBefore(

@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { LoadingService } from '../libs/shared/components/services/loading.service';
 import { LoadingComponent } from '../libs/shared/components/loading/loading.component';
 import { CommonModule } from '@angular/common';
+import { NotificationService } from '../libs/core/services/notification.service';
 
 @Component({
   selector: 'app-root',
@@ -17,5 +18,6 @@ import { CommonModule } from '@angular/common';
 export class App {
   protected readonly title = signal('front-app');
   constructor(
-    public loadingService: LoadingService) {}
+    public loadingService: LoadingService,
+    public notificationService: NotificationService) {}
 }

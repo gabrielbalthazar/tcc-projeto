@@ -30,6 +30,7 @@ export interface MaterialAprovacao {
   data: Date;
   status: MaterialStatus;
   mensagemEditor: string;
+  comentarioCliente: string;
   arquivo: MaterialArquivo;
   historico: RevisaoHistorico[];
 }
@@ -38,4 +39,20 @@ export interface AvaliacaoPayload {
   materialId: string;
   decisao: AprovacaoDecisao;
   comentario?: string;
+}
+
+export interface Versao {
+  id: string;
+  projetoId: string;
+  numero: number;
+  nomeArquivo: string;
+  arquivoUrl: string;
+  tipoArquivo?: string;
+  tamanhoArquivo: number;
+  mensagemEditor?: string;
+  status: 'aguardando_revisao' | 'ajustes_solicitados' | 'aprovada';
+  comentarioCliente?: string;
+  enviadoPor: string;
+  criadaEm: string;
+  avaliadaEm?: string;
 }

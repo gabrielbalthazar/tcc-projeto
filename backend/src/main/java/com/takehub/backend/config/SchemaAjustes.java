@@ -22,5 +22,7 @@ public class SchemaAjustes implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         // Clientes cadastrados pelo editor ficam sem senha ate ativarem a conta.
         jdbcTemplate.execute("ALTER TABLE users ALTER COLUMN senha_hash DROP NOT NULL");
+        // Videos antes ficavam em disco local; agora ficam no Cloudinary (arquivo_url).
+        jdbcTemplate.execute("ALTER TABLE versoes DROP COLUMN IF EXISTS caminho_arquivo");
     }
 }

@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { PrimaryButtonComponent } from './components/primary-button/primary-button.component';
@@ -22,6 +24,7 @@ import { StatCardComponent } from './components/stat-card/stat-card.component';
     StatCardComponent,
     SidebarComponent,
     HeaderComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -34,6 +37,7 @@ import { StatCardComponent } from './components/stat-card/stat-card.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   exports: [
     PrimaryButtonComponent,

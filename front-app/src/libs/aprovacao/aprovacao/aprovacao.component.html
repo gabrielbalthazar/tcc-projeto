@@ -1,4 +1,17 @@
-<div class="aprovacao" *ngIf="material">
+<div class="aprovacao" *ngIf="material && !material.versaoAtual">
+  <header class="material-header">
+    <h1>{{ material.projeto }}</h1>
+  </header>
+  <section class="editor-msg">
+    <mat-icon class="editor-msg-icon">hourglass_empty</mat-icon>
+    <div class="editor-msg-body">
+      <span class="editor-msg-label">Nenhum vídeo para avaliar</span>
+      <p>O editor ainda não enviou uma versão deste projeto.</p>
+    </div>
+  </section>
+</div>
+
+<div class="aprovacao" *ngIf="material && material.versaoAtual">
   <header class="material-header">
     <h1>{{ material.projeto }}</h1>
     <div class="meta">
@@ -41,15 +54,15 @@
         [src]="material.arquivo.url || ''"
       ></video>
 
-      <button class="download-btn" type="button" (click)="baixarArquivo()">
-        <mat-icon>download</mat-icon>
-        Baixar arquivo
-      </button>
     </div>
 
     <div class="arquivo-row">
       <mat-icon>movie</mat-icon>
       <span>{{ material.arquivo.nome }}</span>
+      <button class="download-btn" type="button" (click)="baixarArquivo()">
+        <mat-icon>download</mat-icon>
+        Baixar arquivo
+      </button>
     </div>
   </section>
 

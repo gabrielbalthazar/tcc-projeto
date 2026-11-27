@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AprovacaoService } from '../services/aprovacao.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import {
@@ -27,13 +28,15 @@ export class AprovacaoComponent implements OnInit {
   constructor(
     private aprovacaoService: AprovacaoService,
     private loadingService: LoadingService,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
     this.loadingService.show('Carregando material...');
-    this.aprovacaoService.getMaterial().subscribe({
+    this.aprovacaoService.getMaterial(this.route.parent?.snapshot.paramMap.get('projetoId') ?? '').subscribe({
       next: (material) => {
         this.material = material;
+        this.comentario = material.comentarioCliente;
         this.loadingService.hide();
       },
       error: () => this.loadingService.hide(),
@@ -79,9 +82,10 @@ export class AprovacaoComponent implements OnInit {
   }
 
   baixarArquivo(): void {
-    const url = this.material?.arquivo.url;
+    // fl_attachment faz o Cloudinary entregar o arquivo como download em vez de abrir o player.
+    const url = this.material?.arquivo.url?.replace('/upload/', '/upload/fl_attachment/');
     if (url) {
-      window.open(url, '_blank');
+      window.location.assign(url);
     }
   }
 

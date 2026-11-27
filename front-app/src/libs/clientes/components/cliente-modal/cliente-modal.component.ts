@@ -1,9 +1,10 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Cliente, ClientePayload } from '../../../core/models/cliente.model';
 import { ClientesService } from '../../services/clientes.service';
+import { finalize, timeout } from 'rxjs';
 
 export interface ClienteModalData {
   cliente?: Cliente;
@@ -24,6 +25,7 @@ export class ClienteModalComponent {
   readonly cliente?: Cliente;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ClienteModalComponent, Cliente>,
     private clientesService: ClientesService,
@@ -77,15 +79,21 @@ export class ClienteModalComponent {
       ? this.clientesService.updateCliente(this.cliente.id, payload)
       : this.clientesService.createCliente(payload);
 
-    request$.subscribe({
+    request$.pipe(
+      timeout({ first: 15000 }),
+      finalize(() => {
+        this.salvando = false;
+        this.cdr.markForCheck();
+      }),
+    ).subscribe({
       next: (salvo) => this.dialogRef.close(salvo),
       error: (err: HttpErrorResponse) => {
-        this.salvando = false;
         if (err.status === 409) {
           this.erroEmail = err.error?.message ?? 'Não foi possível usar este e-mail.';
         } else {
           this.erroGeral = err.error?.message ?? 'Não foi possível salvar o cliente. Tente novamente.';
         }
+        this.cdr.markForCheck();
       },
     });
   }

@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, switchMap } from 'rxjs';
@@ -31,6 +31,7 @@ export class ClienteLayoutComponent implements OnInit, OnDestroy {
   private subscription?: Subscription;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private readonly platformId: Object,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -43,7 +44,10 @@ export class ClienteLayoutComponent implements OnInit, OnDestroy {
     this.subscription = this.route.paramMap
       .pipe(switchMap(params => this.projetosService.getProjeto(params.get('projetoId')!)))
       .subscribe({
-        next: (projeto) => this.projeto = this.toSidebarProjeto(projeto),
+        next: (projeto) => {
+          this.projeto = this.toSidebarProjeto(projeto);
+          this.cdr.markForCheck();
+        },
         error: () => this.router.navigate(['/portal/projetos']),
       });
   }

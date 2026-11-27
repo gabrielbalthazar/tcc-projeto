@@ -1,4 +1,5 @@
 export type TimelineStatus =
+  | 'sem_versao'
   | 'aprovada'
   | 'rejeitada'
   | 'aguardando_revisao'

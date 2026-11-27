@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models/user.model';
@@ -17,13 +17,17 @@ export class HeaderComponent implements OnInit {
   menuOpen = false;
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private router: Router,
     private authService: AuthService,
     private elementRef: ElementRef<HTMLElement>,
   ) { }
 
   ngOnInit(): void {
-    this.authService.getCurrentUser().subscribe(user => this.user = user);
+    this.authService.getCurrentUser().subscribe(user => {
+      this.user = user;
+      this.cdr.markForCheck();
+    });
   }
 
   get nome(): string {

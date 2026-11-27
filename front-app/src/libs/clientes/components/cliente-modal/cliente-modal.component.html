@@ -23,6 +23,7 @@
       [error]="erroEmail"
       [hint]="emailHint"
     ></app-input-field>
+    <p class="erro-email" *ngIf="erroEmail">{{ erroEmail }}</p>
 
     <app-input-field label="Telefone" type="tel" formControlName="telefone"></app-input-field>
 

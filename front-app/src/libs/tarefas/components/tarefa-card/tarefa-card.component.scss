@@ -111,3 +111,35 @@
   padding: 0 10px;
   cursor: pointer;
 }
+
+.card-acoes {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.icone-btn {
+  display: flex;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+    color: var(--color-primary);
+  }
+
+  &.perigo:hover {
+    color: #dc2626;
+  }
+}

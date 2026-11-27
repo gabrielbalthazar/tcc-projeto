@@ -1,0 +1,8 @@
+<div class="confirm">
+  <h2 mat-dialog-title>{{ data.titulo }}</h2>
+  <p>{{ data.mensagem }}</p>
+  <div class="acoes">
+    <button type="button" class="cancelar" [mat-dialog-close]="false">Cancelar</button>
+    <button type="button" class="confirmar" [mat-dialog-close]="true">{{ data.confirmar || 'Excluir' }}</button>
+  </div>
+</div>

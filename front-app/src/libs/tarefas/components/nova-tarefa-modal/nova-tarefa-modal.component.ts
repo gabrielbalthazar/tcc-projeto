@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { CreateTarefaPayload, TarefaPrioridade, TarefaStatus } from '../../../core/models/tarefa.model';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CreateTarefaPayload, Tarefa, TarefaPrioridade, TarefaStatus } from '../../../core/models/tarefa.model';
 import { Projeto } from '../../../core/models/projeto.model';
 import { ProjetosService } from '../../../projetos/services/projetos.service';
 
@@ -34,12 +34,18 @@ export class NovaTarefaModalComponent implements OnInit {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<NovaTarefaModalComponent>,
     private projetosService: ProjetosService,
+    private cdr: ChangeDetectorRef,
+    /** Presente apenas na edição. */
+    @Optional() @Inject(MAT_DIALOG_DATA) public tarefa: Tarefa | null,
   ) {
     this.createForm();
   }
 
   ngOnInit(): void {
-    this.projetosService.getProjetos().subscribe(p => this.projetos = p);
+    this.projetosService.getProjetos().subscribe(p => {
+      this.projetos = p;
+      this.cdr.markForCheck(); // app sem zone.js: avisa que há dados novos para desenhar
+    });
   }
 
   createForm(): void {
@@ -50,6 +56,10 @@ export class NovaTarefaModalComponent implements OnInit {
       projetoId: ['', Validators.required],
       status: ['pendente', Validators.required],
     });
+
+    if (this.tarefa) {
+      this.form.patchValue(this.tarefa);
+    }
   }
 
   get titulo() { return this.form.get('titulo')!; }

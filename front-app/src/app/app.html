@@ -3,4 +3,9 @@
   [message]="(loadingService.message$ | async) ?? 'Aguarde...'">
 </app-loading>
 
+<div class="global-error" *ngIf="notificationService.error$ | async as error" role="alert">
+  <span>{{ error }}</span>
+  <button type="button" aria-label="Fechar aviso" (click)="notificationService.clear()">×</button>
+</div>
+
 <router-outlet></router-outlet>

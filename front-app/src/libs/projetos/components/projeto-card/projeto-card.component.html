@@ -43,5 +43,11 @@
       <mat-icon>send</mat-icon>
       Enviar ao Cliente
     </button>
+    <button class="icone-btn" type="button" (click)="editar.emit(projeto)" aria-label="Editar projeto" title="Editar">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button class="icone-btn perigo" type="button" (click)="excluir.emit(projeto.id)" aria-label="Excluir projeto" title="Excluir">
+      <mat-icon>delete</mat-icon>
+    </button>
   </div>
 </div>
