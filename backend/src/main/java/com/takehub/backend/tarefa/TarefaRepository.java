@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TarefaRepository extends JpaRepository<Tarefa, UUID> {
 
     long countByProjetoEditorAndStatus(User editor, TarefaStatus status);
-    long countByProjeto(Projeto projeto);
-    long countByProjetoAndStatus(Projeto projeto, TarefaStatus status);
 
     List<Tarefa> findByProjetoEditor(User editor);
 

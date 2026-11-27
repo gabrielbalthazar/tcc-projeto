@@ -24,6 +24,12 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 @Service
 public class ProjetoService {
 
+    private static final int PROGRESSO_INICIAL = 10;
+    private static final int PROGRESSO_PRIMEIRA_ENTREGA = 20;
+    private static final int PROGRESSO_NOVA_ENTREGA = 10;
+    private static final int PROGRESSO_AJUSTE = 5;
+    private static final int PROGRESSO_MAXIMO_SEM_APROVACAO = 95;
+
     private final ProjetoRepository projetoRepository;
     private final TarefaRepository tarefaRepository;
     private final UsuarioService usuarioService;
@@ -67,7 +73,7 @@ public class ProjetoService {
         projeto.setEditor(editor);
         projeto.setPrazo(request.prazo());
         projeto.setStatus(ProjetoStatus.RASCUNHO);
-        projeto.setProgresso(0);
+        projeto.setProgresso(PROGRESSO_INICIAL);
 
         projetoRepository.save(projeto);
         return ProjetoResponse.from(projeto);
@@ -86,8 +92,6 @@ public class ProjetoService {
         }
         projeto.setPrazo(request.prazo());
         projeto.setStatus(request.status());
-        recalcularProgresso(projeto);
-
         projetoRepository.save(projeto);
         return ProjetoResponse.from(projeto);
     }
@@ -141,10 +145,26 @@ public class ProjetoService {
     }
 
     public void recalcularProgresso(Projeto projeto) {
-        long total = tarefaRepository.countByProjeto(projeto);
-        long concluidas = tarefaRepository.countByProjetoAndStatus(projeto, com.takehub.backend.tarefa.TarefaStatus.CONCLUIDO);
-        projeto.setProgresso(total == 0 ? 0 : (int) Math.round(concluidas * 100.0 / total));
+        projeto.setProgresso(calcularProgresso(versaoRepository.findByProjetoOrderByNumeroDesc(projeto)));
         projetoRepository.save(projeto);
+    }
+
+    public void recalcularProgressoDeTodos() {
+        projetoRepository.findAll().forEach(this::recalcularProgresso);
+    }
+
+    static int calcularProgresso(List<Versao> versoes) {
+        if (versoes.stream().anyMatch(v -> v.getStatus() == VersaoStatus.APROVADA)) {
+            return 100;
+        }
+        int progresso = PROGRESSO_INICIAL;
+        for (Versao versao : versoes) {
+            progresso += versao.getNumero() == 1 ? PROGRESSO_PRIMEIRA_ENTREGA : PROGRESSO_NOVA_ENTREGA;
+            if (versao.getStatus() == VersaoStatus.AJUSTES_SOLICITADOS) {
+                progresso += PROGRESSO_AJUSTE;
+            }
+        }
+        return Math.min(progresso, PROGRESSO_MAXIMO_SEM_APROVACAO);
     }
 
     private User buscarClienteDoEditor(UUID clienteId, User editor) {

@@ -74,6 +74,7 @@ public class VersaoService {
         projeto.setStatus(ProjetoStatus.EM_REVISAO);
         try {
             repository.save(versao);
+            projetoService.recalcularProgresso(projeto);
         } catch (RuntimeException e) {
             storage.remover(salvo.publicId());
             throw e;
@@ -109,7 +110,9 @@ public class VersaoService {
             projeto.setFeedbackMensagem(request.comentario());
             projeto.setFeedbackRejeicoes((projeto.getFeedbackRejeicoes() == null ? 0 : projeto.getFeedbackRejeicoes()) + 1);
         }
-        return VersaoResponse.from(repository.save(versao));
+        Versao avaliada = repository.save(versao);
+        projetoService.recalcularProgresso(projeto);
+        return VersaoResponse.from(avaliada);
     }
 
     private boolean formatoAceito(MultipartFile arquivo) {

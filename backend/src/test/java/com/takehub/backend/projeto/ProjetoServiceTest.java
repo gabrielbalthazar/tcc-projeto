@@ -5,11 +5,11 @@ import static org.mockito.Mockito.*;
 import com.takehub.backend.auth.User;
 import com.takehub.backend.auth.UserRole;
 import com.takehub.backend.tarefa.TarefaRepository;
-import com.takehub.backend.tarefa.TarefaStatus;
 import com.takehub.backend.cliente.ClienteRepository;
 import com.takehub.backend.storage.ArquivoStorage;
 import com.takehub.backend.versao.Versao;
 import com.takehub.backend.versao.VersaoRepository;
+import com.takehub.backend.versao.VersaoStatus;
 import com.takehub.backend.common.exception.ApiException;
 import com.takehub.backend.projeto.dto.UpdateProjetoRequest;
 import java.time.LocalDate;
@@ -39,20 +39,55 @@ class ProjetoServiceTest {
     private ArquivoStorage storage;
 
     @Test
-    void recalculatesProgressFromCompletedTasks() {
+    void progressStartsAtTenPercentWithoutDeliveries() {
+        org.junit.jupiter.api.Assertions.assertEquals(10, ProjetoService.calcularProgresso(List.of()));
+    }
+
+    @Test
+    void progressFollowsDeliveriesAndAdjustments() {
+        org.junit.jupiter.api.Assertions.assertEquals(30, ProjetoService.calcularProgresso(List.of(
+                versao(1, VersaoStatus.AGUARDANDO_REVISAO))));
+        org.junit.jupiter.api.Assertions.assertEquals(35, ProjetoService.calcularProgresso(List.of(
+                versao(1, VersaoStatus.AJUSTES_SOLICITADOS))));
+        org.junit.jupiter.api.Assertions.assertEquals(45, ProjetoService.calcularProgresso(List.of(
+                versao(2, VersaoStatus.AGUARDANDO_REVISAO),
+                versao(1, VersaoStatus.AJUSTES_SOLICITADOS))));
+    }
+
+    @Test
+    void progressNeverReachesHundredWithoutApproval() {
+        List<Versao> versoes = java.util.stream.IntStream.rangeClosed(1, 10)
+                .mapToObj(n -> versao(n, VersaoStatus.AJUSTES_SOLICITADOS))
+                .toList();
+        org.junit.jupiter.api.Assertions.assertEquals(95, ProjetoService.calcularProgresso(versoes));
+    }
+
+    @Test
+    void approvedProjectIsComplete() {
+        org.junit.jupiter.api.Assertions.assertEquals(100, ProjetoService.calcularProgresso(List.of(
+                versao(1, VersaoStatus.APROVADA))));
+    }
+
+    @Test
+    void recalculatesProgressFromVersions() {
         ProjetoService service = new ProjetoService(
                 projetoRepository, tarefaRepository, usuarioService, clienteRepository,
                 versaoRepository, storage);
         Projeto projeto = new Projeto();
-        projeto.setId(UUID.randomUUID());
-
-        when(tarefaRepository.countByProjeto(projeto)).thenReturn(4L);
-        when(tarefaRepository.countByProjetoAndStatus(projeto, TarefaStatus.CONCLUIDO)).thenReturn(3L);
+        when(versaoRepository.findByProjetoOrderByNumeroDesc(projeto)).thenReturn(List.of(
+                versao(1, VersaoStatus.AJUSTES_SOLICITADOS)));
 
         service.recalcularProgresso(projeto);
 
-        org.junit.jupiter.api.Assertions.assertEquals(75, projeto.getProgresso());
+        org.junit.jupiter.api.Assertions.assertEquals(35, projeto.getProgresso());
         verify(projetoRepository).save(projeto);
+    }
+
+    private static Versao versao(int numero, VersaoStatus status) {
+        Versao versao = new Versao();
+        versao.setNumero(numero);
+        versao.setStatus(status);
+        return versao;
     }
 
     @Test
