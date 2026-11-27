@@ -14,5 +14,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, UUID> {
 
     boolean existsByEditorAndUsuario(User editor, User usuario);
 
+    Optional<Cliente> findByEditorAndUsuario(User editor, User usuario);
+
     long countByUsuario(User usuario);
 }

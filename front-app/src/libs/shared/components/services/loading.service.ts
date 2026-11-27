@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, asapScheduler, observeOn } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
@@ -7,8 +7,10 @@ export class LoadingService {
   private loadingSubject = new BehaviorSubject<boolean>(false);
   private messageSubject = new BehaviorSubject<string>('Carregando...');
 
-  loading$ = this.loadingSubject.asObservable();
-  message$ = this.messageSubject.asObservable();
+  // Entrega adiada para logo após a renderização atual: as telas chamam show() no ngOnInit,
+  // e mudar o overlay nesse instante causa o erro NG0100 no Angular.
+  loading$ = this.loadingSubject.pipe(observeOn(asapScheduler));
+  message$ = this.messageSubject.pipe(observeOn(asapScheduler));
 
   show(message = 'Carregando...'): void {
     this.messageSubject.next(message);

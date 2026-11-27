@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DashboardData, StatCard, ProjetoProgresso, PrazoProximo } from '../../core/models/dashboard.model';
 import { DashboardService } from '../services/dashboard.service';
 
@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   prazos: PrazoProximo[] = [];
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private dashboardService: DashboardService
   ) { }
 
@@ -22,6 +23,7 @@ export class DashboardComponent implements OnInit {
       this.stats = data.stats;
       this.projetos = data.projetos;
       this.prazos = data.prazos;
+      this.cdr.markForCheck(); // app sem zone.js: redesenha quando os dados chegam
     });
   }
 }

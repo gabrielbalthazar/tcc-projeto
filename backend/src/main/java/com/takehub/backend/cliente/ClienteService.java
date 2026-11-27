@@ -61,7 +61,12 @@ public class ClienteService {
             throw new ApiException(HttpStatus.CONFLICT, "Este e-mail pertence a uma conta de editor");
         }
         if (clienteRepository.existsByEditorAndUsuario(editor, usuario)) {
-            throw new ApiException(HttpStatus.CONFLICT, "Este cliente ja esta na sua lista");
+            Cliente existente = clienteRepository.findByEditorAndUsuario(editor, usuario)
+                    .orElseThrow(() -> new ApiException(
+                            HttpStatus.CONFLICT, "Este cliente ja esta na sua lista"));
+            long ativos = projetoRepository.countByClienteAndEditorAndStatusNotIn(
+                    usuario, editor, STATUS_ENCERRADOS);
+            return toResponse(existente, ativos);
         }
 
         Cliente cliente = new Cliente();

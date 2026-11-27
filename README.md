@@ -28,6 +28,14 @@ cd ../front-app
 npm install
 ```
 
+### Credenciais do Cloudinary (envio de vídeos)
+
+Copie `backend/.env.example` para `backend/.env` e preencha os três valores, disponíveis no Dashboard do [Cloudinary](https://cloudinary.com). Sem esse arquivo o sistema funciona, mas o envio de vídeo falha. Os vídeos aceitos têm até 100 MB; use MP4 (H.264).
+
+### Primeiros usuários
+
+O banco começa vazio. Crie uma conta de **Editor**, cadastre o cliente na tela Clientes e depois crie a conta de **Cliente** com o mesmo e-mail (em uma janela anônima).
+
 ## Rodando no dia a dia
 
 Abra o **Docker Desktop** e espere aparecer "Engine running". O banco sobe sozinho junto com ele. Se você tiver rodado `docker compose down`, o container foi removido e é preciso rodar `docker compose up -d` de novo, dentro de `backend/`.

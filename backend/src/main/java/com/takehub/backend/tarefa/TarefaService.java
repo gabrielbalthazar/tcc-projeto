@@ -44,11 +44,13 @@ public class TarefaService {
         tarefa.setStatus(request.status());
 
         tarefaRepository.save(tarefa);
+        projetoService.recalcularProgresso(tarefa.getProjeto());
         return TarefaResponse.from(tarefa);
     }
 
     public TarefaResponse updateTarefa(UUID id, UpdateTarefaRequest request, User editor) {
         Tarefa tarefa = findOrThrow(id, editor);
+        var projetoAnterior = tarefa.getProjeto();
         tarefa.setTitulo(request.titulo());
         tarefa.setDescricao(request.descricao());
         tarefa.setPrioridade(request.prioridade());
@@ -56,6 +58,10 @@ public class TarefaService {
         tarefa.setStatus(request.status());
 
         tarefaRepository.save(tarefa);
+        projetoService.recalcularProgresso(tarefa.getProjeto());
+        if (!projetoAnterior.getId().equals(tarefa.getProjeto().getId())) {
+            projetoService.recalcularProgresso(projetoAnterior);
+        }
         return TarefaResponse.from(tarefa);
     }
 
@@ -63,11 +69,14 @@ public class TarefaService {
         Tarefa tarefa = findOrThrow(id, editor);
         tarefa.setStatus(status);
         tarefaRepository.save(tarefa);
+        projetoService.recalcularProgresso(tarefa.getProjeto());
         return TarefaResponse.from(tarefa);
     }
 
     public void deleteTarefa(UUID id, User editor) {
-        tarefaRepository.delete(findOrThrow(id, editor));
+        Tarefa tarefa = findOrThrow(id, editor);
+        tarefaRepository.delete(tarefa);
+        projetoService.recalcularProgresso(tarefa.getProjeto());
     }
 
     private Tarefa findOrThrow(UUID id, User editor) {

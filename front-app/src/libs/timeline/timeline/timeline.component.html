@@ -5,10 +5,19 @@
       <p>Histórico de revisões e entregas dos projetos</p>
     </div>
     <select class="projeto-select" (change)="onProjetoChange($event)">
-      <option value="todos">Todos os projetos</option>
-      <option *ngFor="let projeto of projetos" [value]="projeto">{{ projeto }}</option>
+      <option value="todos" [selected]="projetoSelecionado === 'todos'">Todos os projetos</option>
+      <option *ngFor="let projeto of projetos" [value]="projeto.id" [selected]="projeto.id === projetoSelecionado">{{ projeto.nome }}</option>
     </select>
   </div>
+
+  <section class="envio-versao">
+    <h2>Enviar nova versão</h2>
+    <p class="dica" *ngIf="projetoSelecionado === 'todos'">Selecione um projeto no topo da página para enviar um vídeo.</p>
+    <input #campoArquivo type="file" accept="video/*" (change)="selecionarArquivo($event)">
+    <input type="text" [(ngModel)]="mensagem" placeholder="Mensagem para o cliente">
+    <button type="button" [disabled]="!arquivo || projetoSelecionado === 'todos' || enviando"
+      (click)="enviarVersao(campoArquivo)">Enviar ao cliente</button>
+  </section>
 
   <div class="lista">
     <article

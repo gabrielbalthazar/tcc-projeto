@@ -1,7 +1,15 @@
 <div class="tarefa-card">
   <div class="card-top">
     <h3 class="titulo">{{ tarefa.titulo }}</h3>
-    <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+    <div class="card-acoes">
+      <button class="icone-btn" type="button" (click)="editar.emit(tarefa)" aria-label="Editar tarefa" title="Editar">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button class="icone-btn perigo" type="button" (click)="excluir.emit(tarefa)" aria-label="Excluir tarefa" title="Excluir">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
+    </div>
   </div>
 
   <p class="descricao">{{ tarefa.descricao }}</p>
@@ -16,7 +24,7 @@
     <span class="meta-projeto">{{ tarefa.projeto }}</span>
   </div>
 
-  <select class="status-select" [value]="tarefa.status" (change)="onStatusChange($event)">
-    <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+  <select class="status-select" (change)="onStatusChange($event)">
+    <option *ngFor="let opt of statusOptions" [value]="opt.value" [selected]="opt.value === tarefa.status">{{ opt.label }}</option>
   </select>
 </div>

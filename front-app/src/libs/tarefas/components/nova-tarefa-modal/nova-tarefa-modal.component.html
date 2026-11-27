@@ -1,6 +1,6 @@
 <div class="modal">
   <div class="modal-header">
-    <h2>Criar Nova Tarefa</h2>
+    <h2>{{ tarefa ? 'Editar Tarefa' : 'Criar Nova Tarefa' }}</h2>
     <button class="close-btn" type="button" (click)="close()">
       <mat-icon>close</mat-icon>
     </button>
@@ -42,12 +42,12 @@
     </div>
 
     <div class="select-field">
-      <label>Etapa inicial</label>
+      <label>{{ tarefa ? 'Etapa' : 'Etapa inicial' }}</label>
       <select formControlName="status">
         <option *ngFor="let s of status" [value]="s.value">{{ s.label }}</option>
       </select>
     </div>
 
-    <app-primary-button label="Criar Tarefa" type="submit" [loading]="loading"></app-primary-button>
+    <app-primary-button [label]="tarefa ? 'Salvar alterações' : 'Criar Tarefa'" type="submit" [loading]="loading"></app-primary-button>
   </form>
 </div>

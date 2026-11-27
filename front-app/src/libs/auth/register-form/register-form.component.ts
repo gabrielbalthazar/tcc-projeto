@@ -43,14 +43,6 @@ export class RegisterFormComponent {
   }
 
   enviaRequest(): void {
-    console.log('[DEBUG] enviaRequest chamado', {
-      valid: this.form.valid,
-      value: this.form.value,
-      errors: Object.fromEntries(
-        Object.entries(this.form.controls).map(([k, c]) => [k, c.errors])
-      ),
-    });
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

@@ -1,6 +1,6 @@
 <div class="modal">
   <div class="modal-header">
-    <h2>Criar Novo Projeto</h2>
+    <h2>{{ projeto ? 'Editar Projeto' : 'Criar Novo Projeto' }}</h2>
     <button class="close-btn" type="button" (click)="close()">
       <mat-icon>close</mat-icon>
     </button>
@@ -43,6 +43,13 @@
     >
     </app-input-field>
 
-    <app-primary-button label="Criar Projeto" type="submit" [loading]="loading"></app-primary-button>
+    <div class="select-field" *ngIf="projeto">
+      <label>Status</label>
+      <select formControlName="status">
+        <option *ngFor="let s of status" [value]="s.value">{{ s.label }}</option>
+      </select>
+    </div>
+
+    <app-primary-button [label]="projeto ? 'Salvar alterações' : 'Criar Projeto'" type="submit" [loading]="loading"></app-primary-button>
   </form>
 </div>

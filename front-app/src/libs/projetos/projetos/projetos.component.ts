@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Projeto, ProjetoStatus, CreateProjetoPayload } from '../../core/models/projeto.model';
+import { Projeto, ProjetoStatus, CreateProjetoPayload, UpdateProjetoPayload } from '../../core/models/projeto.model';
 import { ProjetosService } from '../services/projetos.service';
 import { LoadingService } from '../../shared/components/services/loading.service';
 import { NovoProjetoModalComponent } from '../components/novo-projeto-modal/novo-projeto-modal.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface StatusFilter {
   label: string;
@@ -114,5 +115,42 @@ export class ProjetosComponent implements OnInit {
         this.loadingService.hide();
       }
     });
+  }
+
+  editarProjeto(projeto: Projeto): void {
+    const dialogRef = this.dialog.open(NovoProjetoModalComponent, {
+      width: '420px',
+      autoFocus: false,
+      panelClass: 'app-dialog-panel',
+      data: projeto,
+    });
+
+    dialogRef.afterClosed().subscribe((payload: UpdateProjetoPayload | undefined) => {
+      if (!payload) return;
+
+      this.loadingService.show('Salvando projeto...');
+      this.projetosService.updateProjeto(projeto.id, payload).subscribe({
+        next: () => this.carregarProjetos(),
+        error: () => this.loadingService.hide(),
+      });
+    });
+  }
+
+  excluirProjeto(id: string): void {
+    const data: ConfirmDialogData = {
+      titulo: 'Excluir projeto?',
+      mensagem: 'As tarefas, versões e vídeos deste projeto serão apagados. Essa ação não pode ser desfeita.',
+    };
+
+    this.dialog.open(ConfirmDialogComponent, { width: '400px', panelClass: 'app-dialog-panel', data })
+      .afterClosed().subscribe((confirmado) => {
+        if (!confirmado) return;
+
+        this.loadingService.show('Excluindo projeto...');
+        this.projetosService.deleteProjeto(id).subscribe({
+          next: () => this.carregarProjetos(),
+          error: () => this.loadingService.hide(),
+        });
+      });
   }
 }

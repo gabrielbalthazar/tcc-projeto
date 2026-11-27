@@ -1,0 +1,45 @@
+.confirm {
+  padding: 24px 28px;
+
+  h2 {
+    padding: 0;
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-text-dark);
+  }
+
+  p {
+    margin: 0 0 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  button {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+}
+
+.cancelar {
+  border: 1px solid var(--color-border);
+  background: white;
+  color: var(--color-text-dark);
+}
+
+.confirmar {
+  border: 1px solid #dc2626;
+  background: #dc2626;
+  color: white;
+}

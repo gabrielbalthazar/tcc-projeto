@@ -1,82 +1,60 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
 import { API_URL } from '../../core/api.config';
 import {
   AvaliacaoPayload,
   MaterialAprovacao,
+  Versao,
 } from '../../core/models/aprovacao.model';
+import { ProjetosService } from '../../projetos/services/projetos.service';
+import { Projeto } from '../../core/models/projeto.model';
 
 @Injectable({ providedIn: 'root' })
 export class AprovacaoService {
 
-  private readonly API = `${API_URL}/aprovacao`;
-  private readonly material$ = new BehaviorSubject<MaterialAprovacao>(this.getMockData());
+  private readonly API = `${API_URL}`;
 
   constructor(
     private http: HttpClient,
+    private projetosService: ProjetosService,
   ) { }
 
-  getMaterial(): Observable<MaterialAprovacao> {
-    //return this.http.get<MaterialAprovacao>(`${this.API}/atual`);
-    return this.material$.asObservable();
+  getMaterial(projetoId: string): Observable<MaterialAprovacao> {
+    return this.projetosService.getProjeto(projetoId).pipe(
+      switchMap(projeto => this.http.get<Versao[]>(`${this.API}/projetos/${projetoId}/versoes`).pipe(
+        map(versoes => this.toMaterial(projeto, versoes)),
+      )),
+    );
   }
 
   enviarAvaliacao(payload: AvaliacaoPayload): Observable<MaterialAprovacao> {
-    //return this.http.post<MaterialAprovacao>(`${this.API}/avaliar`, payload);
-    const atual = this.material$.value;
-    const aprovado = payload.decisao === 'aprovar';
-    const comentario = payload.comentario?.trim()
-      || (aprovado ? 'Aprovado sem comentários adicionais.' : 'Ajustes solicitados sem comentários adicionais.');
-
-    const atualizado: MaterialAprovacao = {
-      ...atual,
-      status: aprovado ? 'aprovado' : 'ajustes_solicitados',
-      historico: [
-        ...atual.historico,
-        {
-          versao: atual.versaoAtual,
-          status: aprovado ? 'aprovada' : 'rejeitada',
-          comentario,
-        },
-      ],
-    };
-
-    this.material$.next(atualizado);
-    return of(atualizado);
+    return this.http.post<Versao>(`${this.API}/versoes/${payload.materialId}/avaliar`, {
+      decisao: payload.decisao,
+      comentario: payload.comentario?.trim(),
+    }).pipe(switchMap(versao => this.getMaterial(versao.projetoId)));
   }
 
-  private getMockData(): MaterialAprovacao {
+  private toMaterial(projeto: Projeto, versoes: Versao[]): MaterialAprovacao {
+    const atual = versoes[0];
     return {
-      id: '1',
-      projeto: 'Institucional TechCorp',
-      empresa: 'TechCorp',
-      cliente: {
-        nome: 'João Mendes',
-        email: 'joao@techcorp.com.br',
-      },
-      editor: 'Carlos Lima',
-      versaoAtual: 3,
-      data: new Date('2026-03-09'),
-      status: 'pendente',
-      mensagemEditor:
-        'Olá! Segue a versão 3 do vídeo institucional com as correções solicitadas. '
-        + 'A trilha foi substituída por uma mais corporativa e a introdução reduzida para 10 segundos.',
-      arquivo: {
-        nome: 'institucional_techcorp_v3.mp4',
-      },
-      historico: [
-        {
-          versao: 1,
-          status: 'rejeitada',
-          comentario: 'Precisa ajustar a introdução, está muito longa. Reduzir para 10 segundos.',
-        },
-        {
-          versao: 2,
-          status: 'rejeitada',
-          comentario: 'Melhorou, mas a trilha não combina com o tom da empresa. Trocar para algo mais corporativo.',
-        },
-      ],
+      id: atual?.id ?? projeto.id,
+      projeto: projeto.nome,
+      empresa: projeto.cliente,
+      cliente: { nome: projeto.cliente, email: '' },
+      editor: projeto.editor,
+      versaoAtual: atual?.numero ?? 0,
+      data: new Date(atual?.criadaEm ?? projeto.prazo),
+      status: atual?.status === 'aprovada' ? 'aprovado'
+        : atual?.status === 'ajustes_solicitados' ? 'ajustes_solicitados' : 'pendente',
+      mensagemEditor: atual?.mensagemEditor ?? '',
+      comentarioCliente: atual?.comentarioCliente ?? '',
+      arquivo: { nome: atual?.nomeArquivo ?? '', url: atual?.arquivoUrl },
+      historico: versoes.slice(1).filter(v => !!v.avaliadaEm).map(v => ({
+        versao: v.numero,
+        status: v.status === 'aprovada' ? 'aprovada' : 'rejeitada',
+        comentario: v.comentarioCliente ?? '',
+      })),
     };
   }
 }

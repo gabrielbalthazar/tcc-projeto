@@ -7,7 +7,7 @@
     <div class="header-actions">
       <select class="projeto-select" (change)="onProjetoChange($event)">
         <option value="todos">Todos os projetos</option>
-        <option *ngFor="let projeto of projetos" [value]="projeto">{{ projeto }}</option>
+        <option *ngFor="let projeto of projetos" [value]="projeto" [selected]="projeto === projetoSelecionado">{{ projeto }}</option>
       </select>
       <button class="nova-tarefa-btn" type="button" (click)="abrirNovaTarefa()">
         <mat-icon>add</mat-icon>
@@ -40,6 +40,8 @@
           <app-tarefa-card
             [tarefa]="tarefa"
             (mudarStatus)="onMudarStatus($event)"
+            (editar)="editarTarefa($event)"
+            (excluir)="excluirTarefa($event)"
           >
           </app-tarefa-card>
         </div>

@@ -1,7 +1,7 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { API_URL } from '../api.config';
 import {
@@ -46,6 +46,9 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<User> {
+    if (!this.isBrowser) {
+      return EMPTY;
+    }
     return this.http.get<User>(`${this.API}/me`);
   }
 

@@ -3,11 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
 import { ClienteLayoutComponent } from './cliente-layout/cliente-layout.component';
 import { ClientePortalLayoutComponent } from './cliente-portal-layout/cliente-portal-layout.component';
-import { authGuard, roleGuard } from '../core/guards/auth.guard';
+import { authGuard, roleGuard, roleMatchGuard } from '../core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'portal',
+    canMatch: [roleMatchGuard('cliente')],
     canActivate: [authGuard, roleGuard('cliente')],
     children: [
       {
@@ -42,6 +43,7 @@ const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canMatch: [roleMatchGuard('editor')],
     canActivate: [authGuard, roleGuard('editor')],
     children: [
       {

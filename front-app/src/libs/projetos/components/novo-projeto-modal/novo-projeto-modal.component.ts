@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
-import { CreateProjetoPayload } from '../../../core/models/projeto.model';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Projeto, ProjetoStatus } from '../../../core/models/projeto.model';
 import { Cliente } from '../../../core/models/cliente.model';
 import { ClientesService } from '../../../clientes/services/clientes.service';
 
@@ -17,16 +17,31 @@ export class NovoProjetoModalComponent implements OnInit {
 
   clientes: Cliente[] = [];
 
+  readonly status: { label: string; value: ProjetoStatus }[] = [
+    { label: 'Rascunho', value: 'rascunho' },
+    { label: 'Em andamento', value: 'em_andamento' },
+    { label: 'Em revisão', value: 'em_revisao' },
+    { label: 'Pausado', value: 'pausado' },
+    { label: 'Aprovado', value: 'aprovado' },
+    { label: 'Cancelado', value: 'cancelado' },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<NovoProjetoModalComponent>,
     private clientesService: ClientesService,
+    private cdr: ChangeDetectorRef,
+    /** Presente apenas na edição. */
+    @Optional() @Inject(MAT_DIALOG_DATA) public projeto: Projeto | null,
   ) {
     this.createForm();
   }
 
   ngOnInit(): void {
-    this.clientesService.getClientes().subscribe(c => this.clientes = c);
+    this.clientesService.getClientes().subscribe(c => {
+      this.clientes = c;
+      this.cdr.markForCheck(); // app sem zone.js: avisa que há dados novos para desenhar
+    });
   }
 
   createForm(): void {
@@ -35,7 +50,12 @@ export class NovoProjetoModalComponent implements OnInit {
       clienteId: ['', Validators.required],
       prazo: ['', Validators.required],
       descricao: [''],
+      status: ['rascunho'],
     });
+
+    if (this.projeto) {
+      this.form.patchValue(this.projeto);
+    }
   }
 
   get nome() { return this.form.get('nome')!; }
@@ -53,6 +73,8 @@ export class NovoProjetoModalComponent implements OnInit {
       return;
     }
 
-    this.dialogRef.close(this.form.value as CreateProjetoPayload);
+    const { status, ...dados } = this.form.value;
+    // Na criação o status é definido pelo back-end; o progresso é sempre calculado por ele.
+    this.dialogRef.close(this.projeto ? { ...dados, status, progresso: this.projeto.progresso } : dados);
   }
 }

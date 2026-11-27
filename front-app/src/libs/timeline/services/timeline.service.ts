@@ -1,124 +1,49 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, forkJoin, map, switchMap } from 'rxjs';
 import { API_URL } from '../../core/api.config';
 import { TimelineProjeto } from '../../core/models/timeline.model';
+import { Projeto } from '../../core/models/projeto.model';
+import { Versao } from '../../core/models/aprovacao.model';
 
 @Injectable({ providedIn: 'root' })
 export class TimelineService {
 
   private readonly API = `${API_URL}/timeline`;
-  private timeline: TimelineProjeto[] = this.getMockData();
-
   constructor(
     private http: HttpClient,
   ) { }
 
   getTimeline(): Observable<TimelineProjeto[]> {
-    //return this.http.get<TimelineProjeto[]>(this.API);
-    return of(this.timeline);
+    return this.http.get<Projeto[]>(`${API_URL}/projetos`).pipe(
+      switchMap(projetos => forkJoin(projetos.map(projeto =>
+        this.http.get<Versao[]>(`${API_URL}/projetos/${projeto.id}/versoes`).pipe(
+          map(versoes => this.toTimeline(projeto, versoes)),
+        )))),
+    );
   }
 
-  private getMockData(): TimelineProjeto[] {
-    return [
-      {
-        id: '1',
-        projeto: 'Campanha Verão 2026',
-        cliente: 'Marca Sol',
-        status: 'rejeitada',
-        eventos: [
-          {
-            id: '1-1',
-            tipo: 'versao',
-            titulo: 'Versão 1',
-            status: 'rejeitada',
-            data: new Date('2026-03-05'),
-            comentario: {
-              mensagem: 'As cores estão muito frias. Precisa de tons mais quentes para combinar com a campanha de verão.',
-              autor: 'Marca Sol - Marketing',
-            },
-          },
-        ],
-      },
-      {
-        id: '2',
-        projeto: 'Institucional TechCorp',
-        cliente: 'TechCorp',
-        status: 'aguardando_revisao',
-        eventos: [
-          {
-            id: '2-1',
-            tipo: 'versao',
-            titulo: 'Versão 1',
-            status: 'rejeitada',
-            data: new Date('2026-03-04'),
-            comentario: {
-              mensagem: 'Precisa ajustar a introdução, está muito longa. Reduzir para 10 segundos.',
-              autor: 'Cliente TechCorp',
-            },
-          },
-          {
-            id: '2-2',
-            tipo: 'versao',
-            titulo: 'Versão 2',
-            status: 'rejeitada',
-            data: new Date('2026-03-07'),
-            comentario: {
-              mensagem: 'Melhorou, mas a trilha não combina com o tom da empresa. Trocar para algo mais corporativo.',
-              autor: 'Cliente TechCorp',
-            },
-          },
-          {
-            id: '2-3',
-            tipo: 'versao',
-            titulo: 'Versão 3',
-            status: 'aguardando_revisao',
-            data: new Date('2026-03-09'),
-            arquivo: { nome: 'video_institucional_v3.mp4' },
-          },
-          {
-            id: '2-4',
-            tipo: 'entrega',
-            titulo: 'Entrega enviada',
-            status: 'aguardando_download',
-            data: new Date('2026-03-09'),
-            arquivo: {
-              nome: 'institucional_techcorp_v3.mp4',
-              enviadoPor: 'Carlos Lima',
-            },
-          },
-        ],
-      },
-      {
-        id: '3',
-        projeto: 'Evento Corporativo',
-        cliente: 'Loja Fashion',
-        status: 'aprovada',
-        eventos: [
-          {
-            id: '3-1',
-            tipo: 'versao',
-            titulo: 'Versão 1',
-            status: 'aprovada',
-            data: new Date('2026-02-16'),
-            comentario: {
-              mensagem: 'Ficou excelente! Pode seguir com a entrega final.',
-              autor: 'Loja Fashion - Eventos',
-            },
-          },
-          {
-            id: '3-2',
-            tipo: 'entrega',
-            titulo: 'Entrega enviada',
-            status: 'aprovada',
-            data: new Date('2026-02-18'),
-            arquivo: {
-              nome: 'evento_corporativo_final.mp4',
-              enviadoPor: 'Ana Silva',
-            },
-          },
-        ],
-      },
-    ];
+  enviarVersao(projetoId: string, arquivo: File, mensagem: string): Observable<Versao> {
+    const form = new FormData();
+    form.append('arquivo', arquivo);
+    form.append('mensagem', mensagem);
+    return this.http.post<Versao>(`${API_URL}/projetos/${projetoId}/versoes`, form);
+  }
+
+  private toTimeline(projeto: Projeto, versoes: Versao[]): TimelineProjeto {
+    return {
+      id: projeto.id, projeto: projeto.nome, cliente: projeto.cliente,
+      status: !versoes.length ? 'sem_versao'
+        : versoes[0].status === 'aprovada' ? 'aprovada'
+        : versoes[0].status === 'ajustes_solicitados' ? 'rejeitada' : 'aguardando_revisao',
+      eventos: versoes.map(v => ({
+        id: v.id, tipo: 'versao', titulo: `Versão ${v.numero}`,
+        status: v.status === 'aprovada' ? 'aprovada'
+          : v.status === 'ajustes_solicitados' ? 'rejeitada' : 'aguardando_revisao',
+        data: new Date(v.criadaEm),
+        arquivo: { nome: v.nomeArquivo, enviadoPor: v.enviadoPor },
+        comentario: v.comentarioCliente ? { mensagem: v.comentarioCliente, autor: projeto.cliente } : undefined,
+      })),
+    };
   }
 }
